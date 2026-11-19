@@ -1,0 +1,15 @@
+{
+  "schema": 2,
+  "games": [
+    {
+      "id": "drop-four",
+      "title": "Drop Four",
+      "version": "1.1.0",
+      "build": 2,
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.1.0/Drop-Four-1.1.0.zomp",
+      "size": 1882,
+      "sha256": "8cf42ab96bec8bf1075e9e744a2dfb475f9147edbd51fd54c7b0b220727186a3"
+    }
+  ]
+}
