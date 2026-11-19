@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "games": [
+    {
+      "id": "drop-four",
+      "title": "Drop Four",
+      "version": "1.0.0",
+      "build": 1,
+      "url": "https://github.com/JustTrySomthing/table-circle-games/releases/download/drop-four-v1.0.0/Drop-Four-1.0.0.love",
+      "size": 1760,
+      "sha256": "0c68c451e417f0f406e0ca49dcdaec8ba60d9ad29c5cc0f691802bc467ea79f9"
+    }
+  ]
+}
