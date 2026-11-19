@@ -1,0 +1,61 @@
+name: Publish official Drop Four game
+
+on:
+  push:
+    branches: [main]
+    paths: [".github/release-request.json"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-drop-four
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'JustTrySomthing/zompado-games'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Publish .zomp and refresh the current catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 tools/package_game.py out
+          version=$(jq -r '.games[0].version' out/catalog-v2.json)
+          build=$(jq -r '.games[0].build' out/catalog-v2.json)
+          tag="drop-four-v$version"
+          package="out/Drop-Four-$version.zomp"
+          endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
+          if gh api "$endpoint?ref=main" > out/previous.json 2>out/feed-error; then
+            old=$(jq -r .content out/previous.json | base64 --decode | jq -r '.games[0].build')
+            [[ "$build" -gt "$old" ]]
+            sha=$(jq -r .sha out/previous.json)
+          else
+            grep -q 'HTTP 404' out/feed-error || { cat out/feed-error >&2; exit 1; }
+            sha=''
+          fi
+
+          if ! gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json; then
+            gh release create "$tag" --draft --target "$GITHUB_SHA" \
+              --title "Drop Four $version for Zompado" \
+              --notes "Official .zomp package for the Zompado catalog."
+            gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json
+          fi
+          if [[ $(jq -r .isDraft out/release.json) == true ]]; then
+            [[ $(jq -r .targetCommitish out/release.json) == "$GITHUB_SHA" ]]
+            # Replace an interrupted upload in this draft only.
+            gh release upload "$tag" "$package" --clobber
+            gh release edit "$tag" --draft=false --latest
+          fi
+          url=$(jq -r '.games[0].url' out/catalog-v2.json)
+          curl -fsSL --retry 5 --retry-all-errors "$url" -o out/public.zomp
+          cmp "$package" out/public.zomp
+          jq -n --arg data "$(base64 -w 0 out/catalog-v2.json)" --arg sha "$sha" \
+            '{message:"Update official .zomp game catalog", content:$data, branch:"main"} + if $sha == "" then {} else {sha:$sha} end' |
+            gh api --method PUT "$endpoint" --input - --jq .commit.sha

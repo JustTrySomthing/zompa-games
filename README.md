@@ -1,11 +1,9 @@
 # Zompado Games
 
-The official game catalog for [Zompado on Android](https://github.com/JustTrySomthing/zompado). In Zompado, choose **Games → Get Games** to install or update a game independently of the app.
+Zompado installs official games as `.zomp` packages from **Games → Get Games**. [Browse releases](https://github.com/JustTrySomthing/zompado-games/releases).
 
-| Game | Package | Modes |
-|---|---|---|
-| Drop Four | [Drop Four 1.0.0](https://github.com/JustTrySomthing/zompado-games/releases/tag/drop-four-v1.0.0) | Offline solo and same-phone pass and play in Zompado. The standalone LÖVE cartridge supports offline solo. |
+The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with exact file sizes and SHA-256 hashes. Each package is a ZIP archive with a root `zompado.json` manifest and game files. Drop Four's archive identifies its LÖVE entry point. Zompado's current Android app plays its built-in Drop Four implementation after verifying the package. That implementation supports offline solo and same-phone pass and play.
 
-The versioned `.love` package can also be opened directly in LÖVE 11.5. Zompado plays its built-in, known Drop Four implementation after the package is downloaded and verified. General downloaded Lua execution is reserved for the isolated player.
+The old [catalog.json](catalog.json) and its Drop Four 1.0.0 `.love` release serve older Zompado installs. Plain `.love` files are intended for manual imports once the isolated LÖVE player is available.
 
-To add an official release, publish an immutable package under a new tag, then update [catalog.json](catalog.json) with its version, increasing build number, exact download URL, byte count, and SHA-256. Retain old tagged versions. Source for the starter game is in [drop-four/1.0.0](drop-four/1.0.0).
+To publish a new Drop Four package, update the version and increase the build in [the release request](.github/release-request.json). The workflow packages the [game source](drop-four/1.0.0), publishes the new release, and changes the current feed after the public download is verified. Keep old tags available.
