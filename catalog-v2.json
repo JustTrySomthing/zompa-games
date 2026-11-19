@@ -10,9 +10,7 @@
       "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.1.0/Drop-Four-1.1.0.zomp",
       "size": 1882,
       "sha256": "8cf42ab96bec8bf1075e9e744a2dfb475f9147edbd51fd54c7b0b220727186a3"
-    }
-  ],
-  "games": [
+    },
     {
       "id": "drop-four",
       "title": "Drop Four",
@@ -27,6 +25,23 @@
       "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.2.0/Drop-Four-1.2.0.zomp",
       "size": 2665,
       "sha256": "e73d02d9654fd7d20162864626fd34ff6324c862f7809a14106ba7151d7e4ba2"
+    }
+  ],
+  "games": [
+    {
+      "id": "drop-four",
+      "title": "Drop Four",
+      "version": "1.2.1",
+      "build": 4,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.2.1/Drop-Four-1.2.1.zomp",
+      "size": 2693,
+      "sha256": "b56c190e1a671ed800dec6a16a0bcbcb62758cb01d2d16cbbf8652b7d843d7f4"
     }
   ]
 }
