@@ -25,18 +25,19 @@ manifest = {
     "build": build,
     "runtime": "love-11.5",
     "entry": "main.lua",
-    "modes": ["solo"],
+    "modes": ["solo", "local", "online"],
 }
 package = out / f"Drop-Four-{version}.zomp"
 with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     archive.writestr(ZipInfo("zompado.json"), json.dumps(manifest, indent=2) + "\n", ZIP_DEFLATED)
     for name in ("conf.lua", "main.lua"):
-        archive.writestr(ZipInfo(name), (root / "drop-four/1.0.0" / name).read_bytes(), ZIP_DEFLATED)
+        archive.writestr(ZipInfo(name), (root / "drop-four" / version / name).read_bytes(), ZIP_DEFLATED)
 
 catalog = {
     "schema": 2,
+    "archive": [],
     "games": [{
-        **{key: manifest[key] for key in ("id", "title", "version", "build")},
+        **{key: manifest[key] for key in ("id", "title", "version", "build", "modes")},
         "format": "zomp",
         "url": f"https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v{version}/{package.name}",
         "size": package.stat().st_size,
