@@ -85,9 +85,7 @@
       "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.3.1/Drop-Four-1.3.1.zomp",
       "size": 1242196,
       "sha256": "559c8077be194aa1fdf201d8af66cd0093bf49e01f8b52326e2bb178f7e2ae95"
-    }
-  ],
-  "games": [
+    },
     {
       "id": "drop-four",
       "title": "Cats vs Dogs",
@@ -102,6 +100,23 @@
       "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.3.2/Cats-vs-Dogs-1.3.2.zomp",
       "size": 1242200,
       "sha256": "ea0dfc6b65cb026d9aa9e45f15a072b824afd6ad1421505cca7c167d43ca83d4"
+    }
+  ],
+  "games": [
+    {
+      "id": "drop-four",
+      "title": "Cats vs Dogs",
+      "version": "1.3.3",
+      "build": 9,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.3.3/Cats-vs-Dogs-1.3.3.zomp",
+      "size": 1242293,
+      "sha256": "2d3a65a0fef6bd0a349814714694341e95fb84baa5742d16a38313773a150663"
     }
   ]
 }
