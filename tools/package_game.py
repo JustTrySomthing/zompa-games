@@ -30,8 +30,12 @@ manifest = {
 package = out / f"Drop-Four-{version}.zomp"
 with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     archive.writestr(ZipInfo("zompado.json"), json.dumps(manifest, indent=2) + "\n", ZIP_DEFLATED)
-    for name in ("conf.lua", "main.lua"):
-        archive.writestr(ZipInfo(name), (root / "drop-four" / version / name).read_bytes(), ZIP_DEFLATED)
+    source = root / "drop-four" / version
+    names = ["conf.lua", "main.lua"]
+    if (source / "zompado.lua").is_file():
+        names.append("zompado.lua")
+    for name in names:
+        archive.writestr(ZipInfo(name), (source / name).read_bytes(), ZIP_DEFLATED)
 
 catalog = {
     "schema": 2,
