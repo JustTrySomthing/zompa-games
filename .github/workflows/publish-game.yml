@@ -1,4 +1,4 @@
-name: Publish official Drop Four game
+name: Publish official game
 
 on:
   push:
@@ -30,7 +30,11 @@ jobs:
           version=$(jq -r '.games[0].version' out/catalog-v2.json)
           build=$(jq -r '.games[0].build' out/catalog-v2.json)
           tag="drop-four-v$version"
-          package="out/Drop-Four-$version.zomp"
+          title=$(jq -er '.games[0].title' out/catalog-v2.json)
+          url=$(jq -er '.games[0].url' out/catalog-v2.json)
+          filename=${url##*/}
+          [[ "$filename" =~ ^[a-zA-Z0-9.-]+\.zomp$ ]]
+          package="out/$filename"
           endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
           if gh api "$endpoint?ref=main" > out/previous.json 2>out/feed-error; then
             old=$(jq -r .content out/previous.json | base64 --decode | jq -r '.games[0].build')
@@ -48,7 +52,7 @@ jobs:
 
           if ! gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json; then
             gh release create "$tag" --draft --target "$GITHUB_SHA" \
-              --title "Drop Four $version for Zompado" \
+              --title "$title $version for Zompado" \
               --notes "Official .zomp package for the Zompado catalog."
             gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json
           fi
@@ -58,7 +62,6 @@ jobs:
             gh release upload "$tag" "$package" --clobber
             gh release edit "$tag" --draft=false --latest
           fi
-          url=$(jq -r '.games[0].url' out/catalog-v2.json)
           curl -fsSL --retry 5 --retry-all-errors "$url" -o out/public.zomp
           cmp "$package" out/public.zomp
           jq -n --arg data "$(base64 -w 0 out/catalog-v2.json)" --arg sha "$sha" \

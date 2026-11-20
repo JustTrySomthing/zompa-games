@@ -17,17 +17,20 @@ if len(version.split(".")) != 3 or not all(part.isascii() and part.isdigit() for
 if type(build) is not int or build < 1:
     raise ValueError("Expected a positive build number")
 
+renamed = tuple(map(int, version.split("."))) >= (1, 3, 2)
+
 manifest = {
     "schema": 1,
     "id": "drop-four",
-    "title": "Drop Four",
+    "title": "Cats vs Dogs" if renamed else "Drop Four",
     "version": version,
     "build": build,
     "runtime": "love-11.5",
     "entry": "main.lua",
     "modes": ["solo", "local", "online"],
 }
-package = out / f"Drop-Four-{version}.zomp"
+filename = "Cats-vs-Dogs" if renamed else "Drop-Four"
+package = out / f"{filename}-{version}.zomp"
 with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     archive.writestr(ZipInfo("zompado.json"), json.dumps(manifest, indent=2) + "\n", ZIP_DEFLATED)
     source = root / "drop-four" / version
