@@ -34,6 +34,10 @@ with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     names = ["conf.lua", "main.lua"]
     if (source / "zompado.lua").is_file():
         names.append("zompado.lua")
+    names.extend(name for name in ("rules.lua", "view.lua") if (source / name).is_file())
+    for directory in ("art", "audio"):
+        names.extend(path.relative_to(source).as_posix()
+                     for path in sorted((source / directory).rglob("*")) if path.is_file())
     for name in names:
         archive.writestr(ZipInfo(name), (source / name).read_bytes(), ZIP_DEFLATED)
 
