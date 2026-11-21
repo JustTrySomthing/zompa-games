@@ -1,0 +1,31 @@
+name: Submit or update a game
+description: Send a Zompado game and optional catalog artwork for review.
+title: "[Game submission] "
+body:
+  - type: input
+    id: game
+    attributes:
+      label: Game title and version
+      description: Include the existing catalog game ID for an update.
+    validations:
+      required: true
+  - type: textarea
+    id: package
+    attributes:
+      label: Game files
+      description: Link to the source, the .zomp build, and the license. For updates, summarize the changes.
+    validations:
+      required: true
+  - type: checkboxes
+    id: modes
+    attributes:
+      label: Supported modes
+      options:
+        - label: Single player
+        - label: Pass and play
+        - label: Online with a friend
+  - type: textarea
+    id: artwork
+    attributes:
+      label: Cover and screenshots (optional)
+      description: Link one cover and up to three gameplay screenshots, with a short description of each. Use still WebP files up to 350 KiB each.
