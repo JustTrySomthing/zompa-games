@@ -115,9 +115,7 @@
       "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.3.3/Cats-vs-Dogs-1.3.3.zomp",
       "size": 1242293,
       "sha256": "2d3a65a0fef6bd0a349814714694341e95fb84baa5742d16a38313773a150663"
-    }
-  ],
-  "games": [
+    },
     {
       "id": "drop-four",
       "title": "Cats vs Dogs",
@@ -147,6 +145,24 @@
           "label": "Cats win the round with four pieces in a column."
         }
       ]
+    }
+  ],
+  "games": [
+    {
+      "id": "drop-four",
+      "title": "Cats vs Dogs",
+      "version": "1.3.5",
+      "build": 11,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v1.3.5/Cats-vs-Dogs-1.3.5.zomp",
+      "size": 1210548,
+      "sha256": "71e2cf0253c655ac6cb241cdd8ff3aae69a698d10f837aa9c34f52e644deb899",
+      "cover": "cover.webp"
     }
   ]
 }
