@@ -33,11 +33,12 @@ manifest = {
 filename = "Cats-vs-Dogs" if renamed else "Drop-Four"
 package = out / f"{filename}-{version}.zomp"
 with ZipFile(package, "w", ZIP_DEFLATED) as archive:
-    archive.writestr(ZipInfo("zompado.json"), json.dumps(manifest, indent=2) + "\n", ZIP_DEFLATED)
+    manifest_text = json.dumps(manifest, indent=2) + "\n"
+    archive.writestr(ZipInfo("zompa.json"), manifest_text, ZIP_DEFLATED)
+    archive.writestr(ZipInfo("zompado.json"), manifest_text, ZIP_DEFLATED)
     source = root / "drop-four" / version
     names = ["conf.lua", "main.lua"]
-    if (source / "zompado.lua").is_file():
-        names.append("zompado.lua")
+    names.extend(name for name in ("zompa.lua", "zompado.lua") if (source / name).is_file())
     names.extend(name for name in ("rules.lua", "view.lua") if (source / name).is_file())
     for directory in ("art", "audio"):
         names.extend(path.relative_to(source).as_posix()

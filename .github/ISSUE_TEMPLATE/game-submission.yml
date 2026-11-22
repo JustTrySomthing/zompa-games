@@ -1,5 +1,5 @@
 name: Submit or update a game
-description: Send a Zompado game and optional catalog artwork for review.
+description: Send a Zompa game and optional catalog artwork for review.
 title: "[Game submission] "
 body:
   - type: input

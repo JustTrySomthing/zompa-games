@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   publish:
-    if: github.repository == 'JustTrySomthing/zompado-games'
+    if: github.repository == 'JustTrySomthing/zompa-games' || github.repository == 'JustTrySomthing/zompado-games'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -52,8 +52,8 @@ jobs:
 
           if ! gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json; then
             gh release create "$tag" --draft --target "$GITHUB_SHA" \
-              --title "$title $version for Zompado" \
-              --notes "Official .zomp package for the Zompado catalog."
+              --title "$title $version for Zompa" \
+              --notes "Official .zomp package for the Zompa catalog."
             gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json
           fi
           if [[ $(jq -r .isDraft out/release.json) == true ]]; then
