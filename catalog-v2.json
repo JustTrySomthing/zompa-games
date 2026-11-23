@@ -423,6 +423,24 @@
           "label": "Cats win the round with four pieces in a column."
         }
       ]
+    },
+    {
+      "id": "fortress-badlands",
+      "title": "Fortress: The Badlands (Prototype)",
+      "version": "0.1.0",
+      "build": 1,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "localSaves": true,
+      "minZompaBuild": 56,
+      "onlineProtocol": "turns-v1",
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.1.0/Fortress-Badlands-v0.1.0.zomp",
+      "sha256": "7f5f492705f2085d6218fab58ef44a0210b313294b983b1ae2d315df7928c2e4",
+      "size": 19930
     }
   ],
   "games": [
@@ -462,8 +480,8 @@
     {
       "id": "fortress-badlands",
       "title": "Fortress: The Badlands (Prototype)",
-      "version": "0.1.0",
-      "build": 1,
+      "version": "0.2.0",
+      "build": 2,
       "modes": [
         "solo",
         "local",
@@ -473,9 +491,9 @@
       "minZompaBuild": 56,
       "onlineProtocol": "turns-v1",
       "format": "zomp",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.1.0/Fortress-Badlands-v0.1.0.zomp",
-      "sha256": "7f5f492705f2085d6218fab58ef44a0210b313294b983b1ae2d315df7928c2e4",
-      "size": 19930
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.2.0/Fortress-Badlands-v0.2.0.zomp",
+      "sha256": "fbc4b0c44440db74c6ecd4ebbc617e2bc9e85dbb8db6a8987543748f7357be6e",
+      "size": 23980
     }
   ]
 }
