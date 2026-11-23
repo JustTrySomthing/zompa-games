@@ -1,0 +1,23 @@
+name: Retire removed game releases
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/retire-game-once.yml']
+permissions:
+  contents: write
+jobs:
+  retire:
+    if: github.repository == 'JustTrySomthing/zompa-games'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove retired release downloads, tags and game branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for tag in banner-clash-v0.2.0 banner-clash-v0.3.0; do
+            gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          done
+          for branch in banner-clash-0.1.1 banner-clash-board-030; do
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$branch"
+          done

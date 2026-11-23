@@ -41,5 +41,3 @@ Use this JSON structure. Fill the coordinates using screenshots of your own game
   "online": {"moves": [[0.40, 0.50], [0.60, 0.50]]}
 }
 ```
-
-Banner Clash is a private development sandbox and is excluded from the official catalog.
