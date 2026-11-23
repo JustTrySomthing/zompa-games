@@ -372,7 +372,8 @@
           "file": "shot-3.webp",
           "label": "Cats win the round with four pieces in a column."
         }
-      ]
+      ],
+      "description": "Pick Cats or Dogs and take turns dropping pieces into the board. Connect four in a row to win the round. Play solo, share a phone with Pass & Play, or challenge a friend online."
     },
     {
       "id": "banner-clash",
@@ -386,7 +387,8 @@
       "format": "zomp",
       "size": 5744052,
       "sha256": "3a88d8f0d82399796f5d1dbcf3eb140ea3c31cfadbc72317879994e01628d3c0",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/banner-clash-v0.3.0/Banner-Clash-0.3.0.zomp"
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/banner-clash-v0.3.0/Banner-Clash-0.3.0.zomp",
+      "description": "Build a force from your cards and battle for control of the board. Play solo or take turns with a friend on one phone."
     }
   ]
 }

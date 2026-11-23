@@ -9,6 +9,8 @@ import subprocess
 import tempfile
 from zipfile import ZipFile
 
+from catalog_details import listing_details, validate_modes
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -52,8 +54,8 @@ def update(feed, entry):
         if old["build"] == entry["build"] and old["sha256"] != entry["sha256"]:
             raise ValueError("Published builds are immutable. Increase the version and build.")
         return False
-    if not isinstance(entry["modes"], list) or "solo" not in entry["modes"] or not set(entry["modes"]) <= {"solo","local","online"}:
-        raise ValueError("The installed Zompa catalog reader requires Solo support.")
+    validate_modes(entry["modes"])
+    entry.update(listing_details(ROOT, entry["id"], entry["version"]))
     if old:
         if old["version"] == entry["version"]:
             raise ValueError("Use a new release version.")

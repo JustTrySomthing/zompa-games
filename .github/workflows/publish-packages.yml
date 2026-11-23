@@ -2,7 +2,7 @@ name: Publish game packages
 on:
   push:
     branches: [main]
-    paths: ['*/packages/*.zomp', '.github/workflows/publish-packages.yml', 'tools/publish_packages.py']
+    paths: ['*/packages/*.zomp', '.github/workflows/publish-packages.yml', 'tools/publish_packages.py', 'tools/catalog_details.py', 'catalog-art/**']
   workflow_dispatch:
 permissions:
   contents: write
