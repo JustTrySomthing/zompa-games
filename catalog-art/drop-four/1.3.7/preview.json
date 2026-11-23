@@ -1,1 +1,17 @@
-{"cover":"cover.webp"}
+{
+  "cover": "cover.webp",
+  "screenshots": [
+    {
+      "file": "shot-1.webp",
+      "label": "Choose Cats or Dogs before a solo game."
+    },
+    {
+      "file": "shot-2.webp",
+      "label": "Cats and Dogs take turns dropping pieces onto the board."
+    },
+    {
+      "file": "shot-3.webp",
+      "label": "Cats win the round with four pieces in a column."
+    }
+  ]
+}
