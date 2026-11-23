@@ -18,7 +18,7 @@ permissions:
 
 concurrency:
   group: publish-drop-four-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   package:
@@ -35,9 +35,9 @@ jobs:
           if-no-files-found: error
   android:
     needs: package
-    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@6c8d98c1baa3a29b8b659179339ce5b1e4e9c52a
+    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@9813248e6d2801521fe4f8582844ea6ffec359a5
     with:
-      app-ref: 6c8d98c1baa3a29b8b659179339ce5b1e4e9c52a
+      app-ref: 9813248e6d2801521fe4f8582844ea6ffec359a5
       game-artifact: cats-vs-dogs-candidate
   publish:
     needs: android
