@@ -1,5 +1,5 @@
 name: Submit or update a game
-description: Send a Zompa game and optional catalog artwork for review.
+description: Send a Zompa game and required catalog artwork for review.
 title: "[Game submission] "
 body:
   - type: input
@@ -21,11 +21,23 @@ body:
     attributes:
       label: Supported modes
       options:
-        - label: Single player
-        - label: Pass and play
+        - label: Single Player
+          required: true
+        - label: Pass & Play
+          required: true
         - label: Online with a friend
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Game description
+      description: Write one short paragraph of up to 600 characters about what players do and what makes the game interesting.
+    validations:
+      required: true
   - type: textarea
     id: artwork
     attributes:
-      label: Cover and screenshots (optional)
-      description: Link one cover and up to three gameplay screenshots, with a short description of each. Use still WebP files up to 350 KiB each.
+      label: Cover and gameplay screenshots
+      description: Link one 1280 × 720 cover and three to eight gameplay screenshots at their natural aspect ratio, with a caption for each. Use still WebP images up to 350 KiB each.
+    validations:
+      required: true
