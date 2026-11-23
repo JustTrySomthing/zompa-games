@@ -1,0 +1,15 @@
+FORTRESS: THE BADLANDS — PROTOTYPE
+
+Destroy the opposing Fortress to conquer the rival kingdom.
+
+Each kingdom starts with 10 soldiers. Player 1 starts at the bottom. Tap one of your soldiers to see its HP, movement distance, attack range and battle die. Green dots mark available moves and red outlines mark enemies you can attack.
+
+Each turn you may move one soldier OR attack with one soldier. Soldiers cannot move through occupied hexagons, including Knights. Ranged attacks need a clear line of sight.
+
+Both fighters roll their class dice simultaneously until one falls. Winning soldiers automatically recover 4–10 HP (up to their starting maximum). Damage persists between battles.
+
+The Fortress has 30 HP, cannot heal, and retaliates with D8 only when attacked. Its health carries over between assaults.
+
+If both armies are destroyed while both Fortresses survive, the kings launch the Final Siege: simultaneous D12 trebuchet attacks until one or both Fortresses fall.
+
+Player 1: bottom kingdom. Player 2: top kingdom. In Single Player the CPU controls Player 2; Pass & Play uses one device; Online uses Zompa's encrypted match turn system.
