@@ -1,0 +1,154 @@
+name: Publish Fortress to Get Games
+
+on:
+  pull_request:
+    paths:
+      - '.github/fortress-release.json'
+      - '.github/workflows/publish-fortress.yml'
+      - 'fortress-badlands/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/fortress-release.json'
+      - '.github/workflows/publish-fortress.yml'
+      - 'fortress-badlands/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-fortress-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out official games
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Check out matching Zompa SDK
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: JustTrySomthing/zompa
+          ref: db16a1a98ba1f0e577fcc087b70fcccc62fefe12
+          path: sdk-host
+          persist-credentials: false
+      - name: Install Lua runtime for deterministic rules tests
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq liblua5.4-0
+      - name: Build and validate the exact official SDK package
+        run: |
+          set -euo pipefail
+          version=$(jq -er '.version' .github/fortress-release.json)
+          build=$(jq -er '.build' .github/fortress-release.json)
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$build" =~ ^[1-9][0-9]*$ ]]
+          source="fortress-badlands/$version"
+          test -f "$source/main.lua"
+          test -f "$source/zompa.json"
+          jq -e --arg version "$version" --argjson build "$build" \
+            '.id == "fortress-badlands" and .version == $version and .build == $build and
+             .localSaves == true and .onlineProtocol == "turns-v1" and
+             .minZompaBuild >= 56 and
+             (.modes | sort == ["local","online","solo"])' "$source/zompa.json"
+          cmp "$source/zompa.lua" sdk-host/sdk/zompa.lua
+          (cd "$source" && python3 tests/run_lua.py tests/smoke.lua tests/ui_smoke.lua tests/autoplay.lua)
+          filename="Fortress-Badlands-v$version.zomp"
+          python3 sdk-host/sdk/zomp.py build "$source" "out/$filename" --require-three-modes
+          python3 sdk-host/sdk/zomp.py check "out/$filename" --require-three-modes
+          VERSION="$version" BUILD="$build" FILENAME="$filename" python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          package = Path('out') / os.environ['FILENAME']
+          manifest = json.loads((Path('fortress-badlands') / os.environ['VERSION'] / 'zompa.json').read_text())
+          entry = {key:manifest[key] for key in ('id','title','version','build','modes','localSaves','minZompaBuild','onlineProtocol')}
+          entry.update({
+              'format':'zomp',
+              'url':f"https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v{manifest['version']}/{package.name}",
+              'sha256':hashlib.sha256(package.read_bytes()).hexdigest(),
+              'size':package.stat().st_size,
+          })
+          Path('out/catalog-v2.json').write_text(json.dumps({'schema':2,'games':[entry],'archive':[]}, indent=2)+'\n')
+          PY
+      - name: Store exact verified build for publication
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: fortress-candidate
+          path: out/
+          if-no-files-found: error
+
+  publish:
+    needs: validate
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.repository == 'JustTrySomthing/zompa-games'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Download exact tested build
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: fortress-candidate
+          path: out
+      - name: Publish release and update the shared Get Games catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          entry=out/catalog-v2.json
+          version=$(jq -er '.games[0].version' "$entry")
+          tag="fortress-badlands-v$version"
+          filename=$(jq -er '.games[0].url | split("/") | last' "$entry")
+          [[ "$filename" =~ ^[A-Za-z0-9._-]+\.zomp$ ]]
+          file="out/$filename"
+          expected=$(jq -er '.games[0].sha256' "$entry")
+          printf '%s  %s\n' "$expected" "$file" | sha256sum --check
+          required=$(jq -er '.games[0].minZompaBuild' "$entry")
+          shipped=$(curl -fsSL --retry 4 'https://raw.githubusercontent.com/JustTrySomthing/zompa/main/update.json' | jq -er '.build')
+          [[ "$shipped" -ge "$required" ]] || { echo "Zompa Android build $required not released yet" >&2; exit 1; }
+
+          if ! gh release view "$tag" --json isDraft,targetCommitish >/dev/null 2>&1; then
+            gh release create "$tag" --draft --target "$GITHUB_SHA" \
+              --title "Fortress: The Badlands $version (Prototype)" \
+              --notes "Early access game for Zompa Get Games. Includes single player, pass and play, and online turns. Art and Android playtesting are still in progress."
+          fi
+          draft=$(gh release view "$tag" --json isDraft --jq '.isDraft')
+          if [[ "$draft" == true ]]; then
+            gh release upload "$tag" "$file" --clobber
+            gh release edit "$tag" --draft=false --prerelease
+          fi
+          url=$(jq -er '.games[0].url' "$entry")
+          curl -fsSL --retry 5 --retry-all-errors "$url" -o out/public.zomp
+          cmp "$file" out/public.zomp
+
+          endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
+          gh api "$endpoint?ref=main" > out/current.json
+          jq -r '.content' out/current.json | base64 --decode > out/existing-catalog.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          existing=json.loads(Path('out/existing-catalog.json').read_text())
+          candidate=json.loads(Path('out/catalog-v2.json').read_text())['games'][0]
+          assert existing['schema']==2
+          games=existing.setdefault('games',[])
+          old=next((g for g in games if g['id']==candidate['id']),None)
+          if old and old['build']>candidate['build']:
+              raise SystemExit('Refusing to roll back an installed game build')
+          if old and old['build']==candidate['build'] and old != candidate:
+              raise SystemExit('Same build cannot publish changed bytes')
+          if old and old['build']<candidate['build']:
+              archive=existing.setdefault('archive',[])
+              if not any(g['id']==old['id'] and g['build']==old['build'] for g in archive):
+                  archive.append(old)
+          existing['games']=[g for g in games if g['id'] != candidate['id']]+[candidate]
+          Path('out/updated-catalog.json').write_text(json.dumps(existing,indent=2)+'\n')
+          PY
+          sha=$(jq -r '.sha' out/current.json)
+          jq -n --arg sha "$sha" --rawfile data out/updated-catalog.json \
+            '{message:"Publish Fortress game to Get Games", branch:"main", sha:$sha, content:($data|@base64)}' \
+            | gh api --method PUT "$endpoint" --input - --jq .commit.sha
+          echo "Published $tag to Get Games"
