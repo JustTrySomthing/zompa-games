@@ -35,9 +35,9 @@ jobs:
           if-no-files-found: error
   android:
     needs: package
-    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@9813248e6d2801521fe4f8582844ea6ffec359a5
+    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@92fe7b21514662c7d85d90d3e4890f79018979a1
     with:
-      app-ref: 9813248e6d2801521fe4f8582844ea6ffec359a5
+      app-ref: 92fe7b21514662c7d85d90d3e4890f79018979a1
       game-artifact: cats-vs-dogs-candidate
   publish:
     needs: android
