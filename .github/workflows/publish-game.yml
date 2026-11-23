@@ -27,6 +27,8 @@ concurrency:
 
 jobs:
   package:
+    outputs:
+      recovered: ${{ steps.recover.outputs.verified }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -42,6 +44,31 @@ jobs:
           else
             python3 tools/package_game.py out
           fi
+      - name: Verify a previous Android result for publication recovery
+        id: recover
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          verified=$(jq -r '.verifiedRun // empty' .github/release-request.json)
+          [[ -n "$verified" ]] || exit 0
+          [[ "$verified" =~ ^[1-9][0-9]*$ && "$verified" != "$GITHUB_RUN_ID" ]]
+          run="repos/$GITHUB_REPOSITORY/actions/runs/$verified"
+          gh api "$run" | jq -e '
+            .status == "completed" and .event == "push" and .head_branch == "main"
+            and .path == ".github/workflows/publish-game.yml"
+          ' > /dev/null
+          gh api "$run/jobs?filter=latest" | jq -e '
+            any(.jobs[]; .name == "android / friends" and .conclusion == "success")
+          ' > /dev/null
+          gh run download "$verified" -R "$GITHUB_REPOSITORY" \
+            --name cats-vs-dogs-candidate --dir "$RUNNER_TEMP/tested-game"
+          filename=$(jq -er '.games[0].url | split("/") | last' out/catalog-v2.json)
+          [[ "$filename" =~ ^[A-Za-z0-9.-]+\.zomp$ ]]
+          cmp "out/$filename" "$RUNNER_TEMP/tested-game/$filename"
+          cmp out/catalog-v2.json "$RUNNER_TEMP/tested-game/catalog-v2.json"
+          echo "verified=true" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: cats-vs-dogs-candidate
@@ -49,15 +76,20 @@ jobs:
           if-no-files-found: error
   android:
     needs: package
+    if: needs.package.outputs.recovered != 'true'
     uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@9cfffb7dbd00e5021112f3724a44187f660cab36
     with:
       app-ref: 9cfffb7dbd00e5021112f3724a44187f660cab36
       game-artifact: cats-vs-dogs-candidate
   publish:
-    needs: android
+    needs: [package, android]
     permissions:
       contents: write
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'JustTrySomthing/zompa-games'
+    if: >-
+      always() && github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+      github.repository == 'JustTrySomthing/zompa-games' &&
+      needs.package.result == 'success' &&
+      (needs.android.result == 'success' || needs.package.outputs.recovered == 'true')
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -102,17 +134,17 @@ jobs:
             sha=''
           fi
 
-          if ! gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json; then
-            gh release create "$tag" --draft --target "$GITHUB_SHA" \
+          if ! gh release view "$tag" -R "$GITHUB_REPOSITORY" --json isDraft,targetCommitish,assets > out/release.json; then
+            gh release create "$tag" -R "$GITHUB_REPOSITORY" --draft --target "$GITHUB_SHA" \
               --title "$title $version for Zompa" \
               --notes "Official .zomp package for the Zompa catalog."
-            gh release view "$tag" --json isDraft,targetCommitish,assets > out/release.json
+            gh release view "$tag" -R "$GITHUB_REPOSITORY" --json isDraft,targetCommitish,assets > out/release.json
           fi
           if [[ $(jq -r .isDraft out/release.json) == true ]]; then
             [[ $(jq -r .targetCommitish out/release.json) == "$GITHUB_SHA" ]]
             # Replace an interrupted upload in this draft only.
-            gh release upload "$tag" "$package" --clobber
-            gh release edit "$tag" --draft=false --latest
+            gh release upload "$tag" -R "$GITHUB_REPOSITORY" "$package" --clobber
+            gh release edit "$tag" -R "$GITHUB_REPOSITORY" --draft=false --latest
           fi
           curl -fsSL --retry 5 --retry-all-errors "$url" -o out/public.zomp
           cmp "$package" out/public.zomp
