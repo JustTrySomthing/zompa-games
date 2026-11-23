@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: JustTrySomthing/zompa
-          ref: d9430893ea3b8457d105dba71c1d394535954360
+          ref: 9cfffb7dbd00e5021112f3724a44187f660cab36
           path: .app-sdk
           persist-credentials: false
       - name: Validate packages and plan Android checks
@@ -46,9 +46,9 @@ jobs:
       fail-fast: false
       matrix:
         game: ${{ fromJSON(needs.prepare.outputs.candidates) }}
-    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@d9430893ea3b8457d105dba71c1d394535954360
+    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@9cfffb7dbd00e5021112f3724a44187f660cab36
     with:
-      app-ref: d9430893ea3b8457d105dba71c1d394535954360
+      app-ref: 9cfffb7dbd00e5021112f3724a44187f660cab36
       game-artifact: package-candidates
       game-folder: ${{ matrix.game.artifact }}
   publish:
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: JustTrySomthing/zompa
-          ref: d9430893ea3b8457d105dba71c1d394535954360
+          ref: 9cfffb7dbd00e5021112f3724a44187f660cab36
           path: .app-sdk
           persist-credentials: false
       - name: Publish the verified packages
