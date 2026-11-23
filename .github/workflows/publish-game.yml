@@ -1,32 +1,75 @@
 name: Publish official game
 
 on:
+  pull_request:
+    paths:
+      - '.github/release-request.json'
+      - '.github/workflows/publish-game.yml'
+      - 'tools/package_game.py'
+      - 'drop-four/**'
+  workflow_dispatch:
+    inputs:
+      candidate:
+        description: Reference version to verify without publishing
+        required: false
+        type: string
   push:
     branches: [main]
     paths: [".github/release-request.json"]
 
 permissions:
-  contents: write
+  contents: read
+  actions: read
 
 concurrency:
-  group: publish-drop-four
-  cancel-in-progress: false
+  group: publish-drop-four-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  publish:
-    if: github.repository == 'JustTrySomthing/zompa-games' || github.repository == 'JustTrySomthing/zompado-games'
+  package:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+      - name: Build the reference candidate
+        env:
+          CANDIDATE: ${{ inputs.candidate || (github.event_name == 'pull_request' && '1.3.14') || '' }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$CANDIDATE" ]]; then
+            python3 tools/package_game.py out "$CANDIDATE"
+          else
+            python3 tools/package_game.py out
+          fi
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: cats-vs-dogs-candidate
+          path: out
+          if-no-files-found: error
+  android:
+    needs: package
+    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@9cfffb7dbd00e5021112f3724a44187f660cab36
+    with:
+      app-ref: 9cfffb7dbd00e5021112f3724a44187f660cab36
+      game-artifact: cats-vs-dogs-candidate
+  publish:
+    needs: android
+    permissions:
+      contents: write
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'JustTrySomthing/zompa-games'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: cats-vs-dogs-candidate
+          path: out
       - name: Publish .zomp and refresh the current catalog
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python3 tools/package_game.py out
           version=$(jq -r '.games[0].version' out/catalog-v2.json)
           build=$(jq -r '.games[] | select(.id=="drop-four") | .build' out/catalog-v2.json)
           tag="drop-four-v$version"
@@ -35,6 +78,15 @@ jobs:
           filename=${url##*/}
           [[ "$filename" =~ ^[a-zA-Z0-9.-]+\.zomp$ ]]
           package="out/$filename"
+          required=$(jq -er '.games[0].minZompaBuild // 1' out/catalog-v2.json)
+          shipped=$(curl -fsSL https://raw.githubusercontent.com/JustTrySomthing/zompa/main/update.json | jq -er '.build')
+          [[ "$shipped" -ge "$required" ]] || {
+            echo "Publish a compatible Zompa Android release before listing this game." >&2
+            exit 1
+          }
+          hash=$(jq -er '.games[0].sha256' out/catalog-v2.json)
+          [[ "$hash" =~ ^[a-f0-9]{64}$ ]]
+          printf '%s  %s\n' "$hash" "$package" | sha256sum --check
           endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
           if gh api "$endpoint?ref=main" > out/previous.json 2>out/feed-error; then
             old=$(jq -r .content out/previous.json | base64 --decode | jq -r '.games[] | select(.id=="drop-four") | .build')
