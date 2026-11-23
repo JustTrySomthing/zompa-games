@@ -10,7 +10,7 @@ To publish a new Cats vs Dogs package, update the version and increase the build
 
 ## Submit a game
 
-[Open a game submission](https://github.com/JustTrySomthing/zompa-games/issues/new?template=game-submission.yml) with the title, version, links to the source and `.zomp` build, and the required listing details below. Confirm that Single Player, Pass & Play, and Online all work. For a game that is already listed, use the same game ID and include the release notes for the new version.
+[Open a game submission](https://github.com/JustTrySomthing/zompa-games/issues/new?template=game-submission.yml) with the title, version, links to the source and `.zomp` build, and the required listing details below. Confirm that Single Player, Pass & Play, and Online all work. Include a short UTF-8 `how-to-play.txt` at the root of the package (up to 16 KiB). Zompa shows it when players tap the question mark in the game toolbar. Explain the goal, the basic controls or a typical turn, and how players win or finish. For a game that is already listed, use the same game ID and include the release notes for the new version.
 
 Catalog artwork lives at `catalog-art/<game-id>/<version>/`. [Cats vs Dogs 1.3.4](catalog-art/drop-four/1.3.4) shows how the files fit together.
 

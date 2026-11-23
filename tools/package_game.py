@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
-from catalog_details import listing_details, validate_modes
+from catalog_details import listing_details, validate_instructions, validate_modes
 
 root = Path(__file__).resolve().parent.parent
 out = Path(sys.argv[1])
@@ -39,6 +39,10 @@ with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     archive.writestr(ZipInfo("zompado.json"), manifest_text, ZIP_DEFLATED)
     source = root / "drop-four" / version
     names = ["conf.lua", "main.lua"]
+    # Rebuild the already published 1.3.12 package byte-for-byte.
+    requires_instructions = (version, build) != ("1.3.12", 18)
+    if requires_instructions:
+        names.append("how-to-play.txt")
     names.extend(name for name in ("zompa.lua", "zompado.lua") if (source / name).is_file())
     names.extend(name for name in ("rules.lua", "view.lua") if (source / name).is_file())
     for directory in ("art", "audio", "fonts"):
@@ -46,6 +50,10 @@ with ZipFile(package, "w", ZIP_DEFLATED) as archive:
                      for path in sorted((source / directory).rglob("*")) if path.is_file())
     for name in names:
         archive.writestr(ZipInfo(name), (source / name).read_bytes(), ZIP_DEFLATED)
+
+if requires_instructions:
+    with ZipFile(package) as archive:
+        validate_instructions(archive)
 
 catalog = {
     "schema": 2,

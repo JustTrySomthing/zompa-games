@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 from zipfile import ZipFile
 
-from catalog_details import listing_details, validate_modes
+from catalog_details import listing_details, validate_instructions, validate_modes
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,7 +47,7 @@ def package_entry(path, repo):
     return entry, tag
 
 
-def update(feed, entry):
+def update(feed, entry, path):
     games = feed["games"]
     old = next((g for g in games if g["id"] == entry["id"]), None)
     if old and old["build"] >= entry["build"]:
@@ -55,6 +55,8 @@ def update(feed, entry):
             raise ValueError("Published builds are immutable. Increase the version and build.")
         return False
     validate_modes(entry["modes"])
+    with ZipFile(path) as archive:
+        validate_instructions(archive)
     entry.update(listing_details(ROOT, entry["id"], entry["version"]))
     if old:
         if old["version"] == entry["version"]:
@@ -79,7 +81,7 @@ def publish():
         feed = json.loads(base64.b64decode(record["content"]))
         changed = False
         for entry, tag, path in sorted(candidates, key=lambda item: (item[0]["id"],item[0]["build"])):
-            if not update(feed, entry):
+            if not update(feed, entry, path):
                 continue
             check = subprocess.run(["gh","release","view",tag], stdout=subprocess.DEVNULL)
             if check.returncode:

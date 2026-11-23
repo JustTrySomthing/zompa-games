@@ -15,6 +15,22 @@ def validate_modes(modes):
         raise ValueError("Provide Single Player, Pass & Play, and Online.")
 
 
+def validate_instructions(archive):
+    requirement = "Include a non-empty UTF-8 how-to-play.txt (up to 16 KiB) at the package root."
+    try:
+        instructions = archive.getinfo("how-to-play.txt")
+    except KeyError:
+        raise ValueError(requirement) from None
+    if not 1 <= instructions.file_size <= 16 * 1024:
+        raise ValueError(requirement)
+    try:
+        text = archive.read(instructions).decode("utf-8-sig")
+    except UnicodeDecodeError:
+        raise ValueError(requirement) from None
+    if not text.strip() or any(not (char.isprintable() or char in "\n\r\t") for char in text):
+        raise ValueError(requirement)
+
+
 def webp_dimensions(image):
     with image.open("rb") as stream:
         header = stream.read(30)

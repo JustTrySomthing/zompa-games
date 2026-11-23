@@ -27,6 +27,13 @@ body:
           required: true
         - label: Online with a friend
           required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: How to play
+      options:
+        - label: My package has how-to-play.txt at its root, with a short explanation of the goal, what to do, and how to win.
+          required: true
   - type: textarea
     id: description
     attributes:
