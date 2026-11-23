@@ -327,20 +327,6 @@
           "label": "Cats win the round with four pieces in a column."
         }
       ]
-    },
-    {
-      "id": "banner-clash",
-      "title": "Banner Clash",
-      "version": "0.2.0",
-      "build": 3,
-      "format": "zomp",
-      "modes": [
-        "solo",
-        "local"
-      ],
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/banner-clash-v0.2.0/Banner-Clash-0.2.0.zomp",
-      "size": 3121691,
-      "sha256": "250ea84381c18c0a0cb1b7003b0f8ff9d0c4ee8861fc24b2c66d2d813e0fabd6"
     }
   ],
   "games": [
@@ -373,20 +359,6 @@
           "label": "Cats win the round with four pieces in a column."
         }
       ]
-    },
-    {
-      "id": "banner-clash",
-      "title": "Banner Clash",
-      "version": "0.3.0",
-      "build": 4,
-      "modes": [
-        "solo",
-        "local"
-      ],
-      "format": "zomp",
-      "size": 5744052,
-      "sha256": "3a88d8f0d82399796f5d1dbcf3eb140ea3c31cfadbc72317879994e01628d3c0",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/banner-clash-v0.3.0/Banner-Clash-0.3.0.zomp"
     }
   ]
 }

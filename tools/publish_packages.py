@@ -1,48 +1,73 @@
 """Publish versioned Zompa packages and maintain the current catalog."""
+import argparse
 import base64
 import hashlib
 import json
 import os
 from pathlib import Path
-import re
 import subprocess
 import tempfile
-from zipfile import ZipFile
+import shutil
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+# Sandbox packages stay available in the repository for development.
+SANDBOX_GAMES = {"banner-clash"}
 
 
 def run(*args, **kwargs):
     return subprocess.check_output(args, **kwargs)
 
 
-def package_entry(path, repo):
-    size = path.stat().st_size
-    if not 0 < size <= 64 * 1024 * 1024:
-        raise ValueError(f"Invalid package size: {path}")
-    with ZipFile(path) as archive:
-        names = archive.namelist()
-        if len(names) > 4096 or len(set(n.lower() for n in names)) != len(names):
-            raise ValueError(f"Invalid archive entries: {path}")
-        if sum(i.file_size for i in archive.infolist()) > 192 * 1024 * 1024:
-            raise ValueError(f"Expanded package exceeds player limit: {path}")
-        if archive.testzip() or archive.getinfo("main.lua").file_size == 0:
-            raise ValueError(f"Invalid package: {path}")
-        manifest = json.loads(archive.read("zompa.json"))
-    entry = {k: manifest[k] for k in ("id", "title", "version", "build", "modes")}
-    game, version = entry["id"], entry["version"]
-    if (not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", game) or len(game) > 64
-            or game != path.parent.parent.name or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version)
-            or not re.fullmatch(r"[a-zA-Z0-9._-]+\.zomp", path.name)
-            or not isinstance(entry["title"], str) or not 1 <= len(entry["title"].strip()) <= 90
-            or type(entry["build"]) is not int or not 1 <= entry["build"] <= 2147483647
-            or manifest.get("runtime") != "love-11.5" or manifest.get("entry") != "main.lua"
-            or manifest.get("schema") != 1):
-        raise ValueError(f"Invalid player manifest: {path}")
-    tag = f"{game}-v{version}"
-    entry.update(format="zomp", size=size, sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
-                 url=f"https://github.com/{repo}/releases/download/{tag}/{path.name}")
-    return entry, tag
+def verify_candidate(path, repo, sdk):
+    manifest = sdk.validate(path, require_three_modes=True)
+    if manifest["id"] != path.parent.parent.name:
+        raise ValueError(f"Game ID and directory do not match: {path}")
+    if manifest.get("onlineProtocol") != "turns-v1":
+        raise ValueError(f"Official games require the shared turns-v1 protocol: {path}")
+    return sdk.catalog_entry(path, manifest, repo)
+
+
+def prepare(workspace, repo, sdk):
+    import zipfile
+
+    feed = json.loads((ROOT / "catalog-v2.json").read_text())
+    current = {game["id"]: game for game in feed["games"]}
+    candidates = []
+    for path in sorted(ROOT.glob("*/packages/*.zomp")):
+        game = path.parent.parent.name
+        if game in SANDBOX_GAMES:
+            continue
+        with zipfile.ZipFile(path) as archive:
+            metadata = json.loads(sdk.checked_text(archive, "zompa.json", 4096))
+        build = metadata.get("build") if isinstance(metadata, dict) else None
+        if type(build) is not int:
+            raise ValueError(f"Invalid build in {path}")
+        old = current.get(game)
+        if old and build < old["build"]:
+            continue
+        if old and build == old["build"]:
+            with path.open("rb") as stream:
+                if hashlib.file_digest(stream, "sha256").hexdigest() != old["sha256"]:
+                    raise ValueError("Published builds are immutable. Increase the version and build.")
+            continue
+        entry = verify_candidate(path, repo, sdk)
+        if old and old["version"] == entry["version"]:
+            raise ValueError("Use a new release version.")
+        scenario = path.with_suffix(".scenario.json")
+        if not scenario.is_file():
+            raise ValueError(f"Missing Android test scenario: {scenario}")
+        artifact = f"game-{game}-{build}"
+        staging = workspace / artifact
+        staging.mkdir(parents=True)
+        shutil.copyfile(path, staging / path.name)
+        shutil.copyfile(scenario, staging / "scenario.json")
+        (staging / "catalog-v2.json").write_text(json.dumps(
+            {"schema": 2, "games": [entry], "archive": []}
+        ) + "\n")
+        candidates.append({"artifact": artifact, "package": str(path.relative_to(ROOT)),
+                           "sha256": entry["sha256"]})
+    return candidates
 
 
 def update(feed, entry):
@@ -65,12 +90,20 @@ def update(feed, entry):
     return True
 
 
-def publish():
+def publish(verified, sdk):
     repo = os.environ["GITHUB_REPOSITORY"]
     endpoint = f"repos/{repo}/contents/catalog-v2.json"
     candidates = []
-    for path in sorted(ROOT.glob("*/packages/*.zomp")):
-        entry, tag = package_entry(path, repo)
+    app_feed = json.loads(run("curl", "-fsSL",
+        "https://raw.githubusercontent.com/JustTrySomthing/zompa/main/update.json"))
+    for verified_game in verified:
+        path = ROOT / verified_game["package"]
+        entry = verify_candidate(path, repo, sdk)
+        if entry["sha256"] != verified_game["sha256"]:
+            raise ValueError(f"Package differs from the Android-tested bytes: {path}")
+        if entry["minZompaBuild"] > app_feed["build"]:
+            raise ValueError(f"Publish a compatible version of Zompa before listing {path}.")
+        tag = f"{entry['id']}-v{entry['version']}"
         candidates.append((entry, tag, path))
     for attempt in range(3):
         record = json.loads(run("gh", "api", endpoint + "?ref=main"))
@@ -102,5 +135,22 @@ def publish():
                 raise
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sdk", required=True, type=Path)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--prepare", type=Path)
+    mode.add_argument("--verified")
+    args = parser.parse_args()
+    sys.path.insert(0, str(args.sdk.resolve()))
+    import zomp
+
+    if args.prepare is not None:
+        candidates = prepare(args.prepare, os.environ["GITHUB_REPOSITORY"], zomp)
+        print(json.dumps(candidates, separators=(",", ":")))
+    else:
+        publish(json.loads(args.verified), zomp)
+
+
 if __name__ == "__main__":
-    publish()
+    main()

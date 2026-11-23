@@ -1,23 +1,74 @@
 name: Publish game packages
 on:
+  pull_request:
+    paths: ['*/packages/**', '.github/workflows/publish-packages.yml', 'tools/publish_packages.py']
   push:
     branches: [main]
-    paths: ['*/packages/*.zomp', '.github/workflows/publish-packages.yml', 'tools/publish_packages.py']
+    paths: ['*/packages/**', '.github/workflows/publish-packages.yml', 'tools/publish_packages.py']
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
+  actions: read
 concurrency:
-  group: publish-packages
-  cancel-in-progress: false
+  group: publish-packages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
-  publish:
-    if: github.ref == 'refs/heads/main'
+  prepare:
     runs-on: ubuntu-24.04
+    outputs:
+      candidates: ${{ steps.plan.outputs.candidates }}
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-      - name: Verify releases and update Get Games
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: JustTrySomthing/zompa
+          ref: d9430893ea3b8457d105dba71c1d394535954360
+          path: .app-sdk
+          persist-credentials: false
+      - name: Validate packages and plan Android checks
+        id: plan
+        run: |
+          set -euo pipefail
+          plan=$(python3 tools/publish_packages.py --sdk .app-sdk/sdk --prepare "$RUNNER_TEMP/candidates")
+          printf 'candidates=%s\n' "$plan" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: steps.plan.outputs.candidates != '[]'
+        with:
+          name: package-candidates
+          path: ${{ runner.temp }}/candidates
+          if-no-files-found: error
+  android:
+    needs: prepare
+    if: needs.prepare.outputs.candidates != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        game: ${{ fromJSON(needs.prepare.outputs.candidates) }}
+    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@d9430893ea3b8457d105dba71c1d394535954360
+    with:
+      app-ref: d9430893ea3b8457d105dba71c1d394535954360
+      game-artifact: package-candidates
+      game-folder: ${{ matrix.game.artifact }}
+  publish:
+    needs: [prepare, android]
+    if: github.ref == 'refs/heads/main' && github.repository == 'JustTrySomthing/zompa-games'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: JustTrySomthing/zompa
+          ref: d9430893ea3b8457d105dba71c1d394535954360
+          path: .app-sdk
+          persist-credentials: false
+      - name: Publish the verified packages
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 tools/publish_packages.py
+          VERIFIED: ${{ needs.prepare.outputs.candidates }}
+        run: python3 tools/publish_packages.py --sdk .app-sdk/sdk --verified "$VERIFIED"

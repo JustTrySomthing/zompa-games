@@ -1,0 +1,5 @@
+Drop a piece into one of the seven columns. Pieces fall into the lowest open space. Connect four in a row horizontally, vertically, or diagonally to win the round. A full board without four in a row is a draw. Win three rounds to win the game.
+
+Single Player: choose Cats or Dogs and a difficulty, then play against the computer.
+Pass & Play: take turns on the same device.
+Online 2 Player: invite a friend in Zompa and take turns from your own devices.
