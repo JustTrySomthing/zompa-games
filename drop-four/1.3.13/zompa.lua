@@ -90,18 +90,24 @@ function sdk.loadSession()
     if data and #data > 0 and #data <= 262144 then return data end
 end
 
-function sdk.clearSession()
-    local mode, hosted = sdk.mode()
-    if mode == "online" then return true end
-    if not hosted then
-        local path = savePath("session-solo")
-        return not love.filesystem.getInfo(path) or love.filesystem.remove(path)
-    end
-    local path = sessionPath(mode)
+local function removeHostFile(path)
     local file = io.open(path, "rb")
     if not file then return true end
     file:close()
     return os.remove(path)
+end
+
+function sdk.clearSession()
+    local mode, hosted = sdk.mode()
+    if mode == "online" then return true end
+    if not hosted then return sdk.clear("session-solo") end
+    if mode == "local" then
+        -- Older hosts mark the start of Pass & Play before a game has a save.
+        -- Clear the marker too so finishing a migrated match hides Resume.
+        local ok, err = removeHostFile("/home/web_user/love/.zompado-local-started")
+        if not ok then return false, err end
+    end
+    return removeHostFile(sessionPath(mode))
 end
 
 function sdk.audio()

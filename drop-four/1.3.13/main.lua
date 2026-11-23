@@ -92,7 +92,8 @@ local function drop(column, restoring)
     if state.winner or state.played == 42 then endRound(restoring) end
     if not restoring then
         if state.scores[1] == 3 or state.scores[2] == 3 then
-            sdk.clearSession()
+            local ok, err = sdk.clearSession()
+            if not ok then print(err) end
         else
             save()
         end
