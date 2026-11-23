@@ -12,7 +12,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 # Sandbox packages stay available in the repository for development.
-SANDBOX_GAMES = {"banner-clash"}
+SANDBOX_GAMES = set()
 
 
 def run(*args, **kwargs):
