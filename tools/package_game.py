@@ -40,7 +40,7 @@ with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     names = ["conf.lua", "main.lua"]
     names.extend(name for name in ("zompa.lua", "zompado.lua") if (source / name).is_file())
     names.extend(name for name in ("rules.lua", "view.lua") if (source / name).is_file())
-    for directory in ("art", "audio"):
+    for directory in ("art", "audio", "fonts"):
         names.extend(path.relative_to(source).as_posix()
                      for path in sorted((source / directory).rglob("*")) if path.is_file())
     for name in names:
