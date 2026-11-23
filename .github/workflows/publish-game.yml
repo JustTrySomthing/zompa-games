@@ -28,7 +28,7 @@ jobs:
           set -euo pipefail
           python3 tools/package_game.py out
           version=$(jq -r '.games[0].version' out/catalog-v2.json)
-          build=$(jq -r '.games[0].build' out/catalog-v2.json)
+          build=$(jq -r '.games[] | select(.id=="drop-four") | .build' out/catalog-v2.json)
           tag="drop-four-v$version"
           title=$(jq -er '.games[0].title' out/catalog-v2.json)
           url=$(jq -er '.games[0].url' out/catalog-v2.json)
@@ -37,12 +37,12 @@ jobs:
           package="out/$filename"
           endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
           if gh api "$endpoint?ref=main" > out/previous.json 2>out/feed-error; then
-            old=$(jq -r .content out/previous.json | base64 --decode | jq -r '.games[0].build')
+            old=$(jq -r .content out/previous.json | base64 --decode | jq -r '.games[] | select(.id=="drop-four") | .build')
             [[ "$build" -gt "$old" ]]
             sha=$(jq -r .sha out/previous.json)
             jq -r .content out/previous.json | base64 --decode > out/old-catalog.json
             jq --slurpfile old out/old-catalog.json \
-              '.archive = ((($old[0].archive // []) + $old[0].games) | unique_by([.id, .build]))' \
+              '.archive = ((($old[0].archive // []) + [$old[0].games[] | select(.id=="drop-four")]) | unique_by([.id, .build])) | .games += [$old[0].games[] | select(.id!="drop-four")]' \
               out/catalog-v2.json > out/next-catalog.json
             mv out/next-catalog.json out/catalog-v2.json
           else

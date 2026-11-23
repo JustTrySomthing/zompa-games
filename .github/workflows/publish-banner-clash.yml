@@ -1,0 +1,42 @@
+name: Publish Banner Clash
+on:
+  push:
+    branches: [main]
+    paths: ['banner-clash/packages/Banner-Clash-0.2.0.zomp']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Release and verify the game before listing it
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          name=Banner-Clash-0.2.0.zomp
+          file="banner-clash/packages/$name"
+          tag=banner-clash-v0.2.0
+          url="https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$name"
+          unzip -tq "$file"
+          unzip -p "$file" zompa.json | jq -e '.id=="banner-clash" and .version=="0.2.0" and .build==3 and .modes==["solo","local"]'
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" "$file" --target "$GITHUB_SHA" --title 'Banner Clash 0.2.0' --notes 'Solo and Pass & Play for Zompa.' --latest=false
+          fi
+          curl -fLsS --retry 6 --retry-all-errors "$url" -o /tmp/published.zomp
+          cmp "$file" /tmp/published.zomp
+          endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
+          gh api "$endpoint?ref=main" > /tmp/current.json
+          jq -r .content /tmp/current.json | base64 -d > /tmp/feed.json
+          jq --arg url "$url" --arg sha "$(sha256sum "$file" | cut -d' ' -f1)" --argjson size "$(stat -c %s "$file")" '
+            if any(.games[]; .id=="banner-clash" and .build>3) then error("Newer game already published") else . end |
+            .games |= (map(select(.id!="banner-clash")) + [{id:"banner-clash",title:"Banner Clash",version:"0.2.0",build:3,format:"zomp",modes:["solo","local"],url:$url,size:$size,sha256:$sha}])' /tmp/feed.json > /tmp/published.json
+          if ! cmp -s /tmp/feed.json /tmp/published.json; then
+            jq -n --arg sha "$(jq -r .sha /tmp/current.json)" --arg data "$(base64 -w0 /tmp/published.json)" '{message:"List Banner Clash in Get Games",content:$data,sha:$sha,branch:"main"}' |
+              gh api --method PUT "$endpoint" --input - --jq .commit.sha
+          fi
