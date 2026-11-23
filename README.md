@@ -6,7 +6,7 @@ The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with 
 
 The old [catalog.json](catalog.json) and its Drop Four 1.0.0 `.love` release serve older Zompa installs. Plain `.love` files are intended for manual imports in Zompa.
 
-Cats vs Dogs is the [three-mode SDK reference](drop-four/1.3.14). To publish a new build, update the version and build in [the release request](.github/release-request.json). [The publishing workflow](.github/workflows/publish-game.yml) builds one package, checks it in the Android player in all three modes, publishes the tested bytes, and lists the game after verifying the public download. Keep old tags available.
+Cats vs Dogs is the [three-mode SDK reference](drop-four/1.3.16). To publish a new build, update the version and build in [the release request](.github/release-request.json). [The publishing workflow](.github/workflows/publish-game.yml) builds one package, checks it in the Android player in all three modes, publishes the tested bytes, and lists the game after verifying the public download. Keep old tags available.
 
 ## Submit a game
 

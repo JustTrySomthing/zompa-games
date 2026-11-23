@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "id": "drop-four",
+  "title": "Cats vs Dogs",
+  "version": "1.3.16",
+  "build": 22,
+  "runtime": "love-11.5",
+  "entry": "main.lua",
+  "modes": [
+    "solo",
+    "local",
+    "online"
+  ],
+  "localSaves": true,
+  "minZompaBuild": 56,
+  "onlineProtocol": "turns-v1"
+}
