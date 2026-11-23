@@ -458,6 +458,24 @@
           "label": "Cats win the round with four pieces in a column."
         }
       ]
+    },
+    {
+      "id": "fortress-badlands",
+      "title": "Fortress: The Badlands (Prototype)",
+      "version": "0.1.0",
+      "build": 1,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "localSaves": true,
+      "minZompaBuild": 56,
+      "onlineProtocol": "turns-v1",
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.1.0/Fortress-Badlands-v0.1.0.zomp",
+      "sha256": "7f5f492705f2085d6218fab58ef44a0210b313294b983b1ae2d315df7928c2e4",
+      "size": 19930
     }
   ]
 }
