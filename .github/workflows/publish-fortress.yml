@@ -97,6 +97,7 @@ jobs:
       - name: Publish release and update the shared Get Games catalog
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: JustTrySomthing/zompa-games
         run: |
           set -euo pipefail
           entry=out/catalog-v2.json
