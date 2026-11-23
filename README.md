@@ -23,3 +23,9 @@ Optional catalog artwork lives at `catalog-art/<game-id>/<version>/`. [Cats vs D
 Export still WebP images at **350 KiB or smaller per image**. Submit full game frames without phone status bars, moderator tools, or personal information. The cover appears on the Get Games card. Screenshots load when someone opens the gallery from the photo icon. Art lives outside the package so it does not increase the download or installation size.
 
 For an artwork update, include a new game version and a higher build number with the revised files under the new version folder. The latest catalog entry picks up that version’s art when the release is published.
+
+### Publish a game to Get Games
+
+Commit the tested package to `<game-id>/packages/<filename>.zomp` on main. The package publisher reads the root `zompa.json`, publishes a GitHub Release, verifies the public download, and adds it to the app catalog. Include the source and tests in the game's directory for recovery. Updating a game requires a new version and a higher build. Previous releases remain available for installed games and shared links.
+
+Use the current player contract (LÖVE 11.5, main.lua, and a working Solo mode). Pass & Play is optional. Online requires compatible host multiplayer support. New titles using the supported modes need no app or per-title workflow change.
