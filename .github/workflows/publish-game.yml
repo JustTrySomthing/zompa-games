@@ -1,32 +1,61 @@
 name: Publish official game
 
 on:
+  pull_request:
+    paths:
+      - '.github/release-request.json'
+      - '.github/workflows/publish-game.yml'
+      - 'tools/package_game.py'
+      - 'drop-four/**'
+  workflow_dispatch:
   push:
     branches: [main]
     paths: [".github/release-request.json"]
 
 permissions:
-  contents: write
+  contents: read
+  actions: read
 
 concurrency:
-  group: publish-drop-four
+  group: publish-drop-four-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  publish:
-    if: github.repository == 'JustTrySomthing/zompa-games' || github.repository == 'JustTrySomthing/zompado-games'
+  package:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+      - run: python3 tools/package_game.py out
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: cats-vs-dogs-candidate
+          path: out
+          if-no-files-found: error
+  android:
+    needs: package
+    uses: JustTrySomthing/zompa/.github/workflows/android-friends-smoke.yml@ae1379a2848a95da168b1f5435d0aeeca97eedd5
+    with:
+      app-ref: ae1379a2848a95da168b1f5435d0aeeca97eedd5
+      game-artifact: cats-vs-dogs-candidate
+  publish:
+    needs: android
+    permissions:
+      contents: write
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'JustTrySomthing/zompa-games'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: cats-vs-dogs-candidate
+          path: out
       - name: Publish .zomp and refresh the current catalog
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python3 tools/package_game.py out
           version=$(jq -r '.games[0].version' out/catalog-v2.json)
           build=$(jq -r '.games[] | select(.id=="drop-four") | .build' out/catalog-v2.json)
           tag="drop-four-v$version"
@@ -35,6 +64,9 @@ jobs:
           filename=${url##*/}
           [[ "$filename" =~ ^[a-zA-Z0-9.-]+\.zomp$ ]]
           package="out/$filename"
+          hash=$(jq -er '.games[0].sha256' out/catalog-v2.json)
+          [[ "$hash" =~ ^[a-f0-9]{64}$ ]]
+          printf '%s  %s\n' "$hash" "$package" | sha256sum --check
           endpoint="repos/$GITHUB_REPOSITORY/contents/catalog-v2.json"
           if gh api "$endpoint?ref=main" > out/previous.json 2>out/feed-error; then
             old=$(jq -r .content out/previous.json | base64 --decode | jq -r '.games[] | select(.id=="drop-four") | .build')

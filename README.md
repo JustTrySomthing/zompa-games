@@ -6,7 +6,7 @@ The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with 
 
 The old [catalog.json](catalog.json) and its Drop Four 1.0.0 `.love` release serve older Zompa installs. Plain `.love` files are intended for manual imports in Zompa.
 
-To publish a new Cats vs Dogs package, update the version and increase the build in [the release request](.github/release-request.json). The workflow packages the [versioned game source](drop-four), publishes the new release, and changes the current feed after the public download is verified. Keep old tags available.
+Cats vs Dogs is the [three-mode SDK reference](drop-four/1.3.13). To publish a new build, update the version and build in [the release request](.github/release-request.json). [The publishing workflow](.github/workflows/publish-game.yml) builds one package, checks it in the Android player in all three modes, publishes the tested bytes, and lists the game after verifying the public download. Keep old tags available.
 
 ## Submit a game
 
@@ -28,4 +28,4 @@ For an artwork update, include a new game version and a higher build number with
 
 Commit the tested package to `<game-id>/packages/<filename>.zomp` on main. The package publisher reads the root `zompa.json`, publishes a GitHub Release, verifies the public download, and adds it to the app catalog. Include the source and tests in the game's directory for recovery. Updating a game requires a new version and a higher build. Previous releases remain available for installed games and shared links.
 
-Use the current player contract (LÖVE 11.5, main.lua, and a working Solo mode). Pass & Play is optional. Online requires compatible host multiplayer support. New titles using the supported modes need no app or per-title workflow change.
+The [current SDK standard](https://github.com/JustTrySomthing/zompa/blob/main/sdk/README.md) calls for Single Player, Pass & Play, and Online 2 Player. Online play uses hidden encrypted Chatmail messages exchanged by the two Zompa apps. The Android three-mode publishing check currently covers Cats vs Dogs. The general package publisher still serves the existing catalog workflow; other games need compatible Android move handling and equivalent three-mode verification before they meet the SDK standard.

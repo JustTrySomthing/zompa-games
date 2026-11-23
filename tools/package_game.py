@@ -38,6 +38,11 @@ with ZipFile(package, "w", ZIP_DEFLATED) as archive:
     archive.writestr(ZipInfo("zompado.json"), manifest_text, ZIP_DEFLATED)
     source = root / "drop-four" / version
     names = ["conf.lua", "main.lua"]
+    instructions = source / "how-to-play.txt"
+    names.append("how-to-play.txt")
+    help_bytes = instructions.read_bytes()
+    if len(help_bytes) > 16 * 1024 or not help_bytes.decode("utf-8").strip():
+        raise ValueError("how-to-play.txt must be nonblank UTF-8 and fit in 16 KiB")
     names.extend(name for name in ("zompa.lua", "zompado.lua") if (source / name).is_file())
     names.extend(name for name in ("rules.lua", "view.lua") if (source / name).is_file())
     for directory in ("art", "audio", "fonts"):
@@ -52,6 +57,7 @@ catalog = {
     "games": [{
         **{key: manifest[key] for key in ("id", "title", "version", "build", "modes")},
         "format": "zomp",
+        "localSaves": True,
         "url": f"https://github.com/JustTrySomthing/zompado-games/releases/download/drop-four-v{version}/{package.name}",
         "size": package.stat().st_size,
         "sha256": hashlib.sha256(package.read_bytes()).hexdigest(),
