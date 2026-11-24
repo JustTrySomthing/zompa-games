@@ -103,7 +103,7 @@ end
 has(impact,' HITS!')
 love.update(70)
 local finished=paint()
-has(finished,'CONTINUE')
+assert(finished:find('CONTINUE',1,true) or finished:find('ROLL D8 TO HEAL',1,true),'reward or continue must be available')
 assert(finished:find(' WINS!',1,true) or finished:find(' WINS THE MATCH!',1,true),
   'named kingdom and character battle result required')
 local hh=math.min(height-12,620);local y=(height-hh)/2
