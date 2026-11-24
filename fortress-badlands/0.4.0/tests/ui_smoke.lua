@@ -9,6 +9,11 @@ love={
 local G=love.graphics
 for _,fn in ipairs({'setColor','printf','setFont','polygon','setLineWidth','circle','rectangle','line'}) do G[fn]=function(...) end end
 G.newFont=function(size) assert(type(size)=='number' and size>0);return {size=size} end
+G.newImage=function(path)
+  local w,h=path=='art/board.png' and 700 or 144, path=='art/board.png' and 984 or 144
+  return {getDimensions=function()return w,h end, getWidth=function()return w end, setFilter=function()end}
+end
+G.draw=function(...) end
 local width,height=390,700
 G.getDimensions=function()return width,height end
 -- Mock only SDK host integration. UI code still calls the actual Zompa API names.
