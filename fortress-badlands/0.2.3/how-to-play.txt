@@ -1,0 +1,22 @@
+FORTRESS: THE BADLANDS — HOW TO PLAY
+
+GOAL
+Destroy the enemy Fortress. Player 1 begins at the bottom. Two armies of ten face each other across neutral Badlands. No territory claiming.
+
+SELECT, PREVIEW, CONFIRM
+Tap any soldier to inspect its class, current/maximum Health, Move and Hit damage. Every character uses the same D8. Select your own soldier and see GREEN empty hexes you can move to and RED crossed-swords enemy hexes you can attack by LANDING THERE. Tap a highlighted hex to preview a move or attack. The button reads MOVE TO HEX or ATTACK THIS HEX. The game does not act until you confirm. Tap CANCEL to choose again. Tapping an enemy without selecting your piece shows its stats only.
+
+MOVEMENT IS ATTACK RANGE
+Move shows how many adjacent honeycomb hexes you may travel (up to that number, not necessarily all). A soldier can change direction along a clear movement route, but cannot travel through another soldier or Fortress. Knights cannot jump. To attack, choose an enemy occupying a hex your soldier can REACH using its own Move allowance. The attacker contests that destination and takes the enemy's hex ONLY if the attacker wins. There is no separate Capture/Attack range.
+
+BATTLE
+The combatants roll D8 simultaneously. The higher die wins that exchange and inflicts its own listed Hit damage. Tied rolls cause no damage. Each exchange is shown slowly, with both combatants, dice, remaining HP, and damage. Exchanges continue until one combatant reaches zero HP. The defeated soldier disappears. A winning attacker takes the enemy's hex; a winning defender stays put. The winner gains 4–10 HP automatically (not above maximum).
+
+FORTRESS
+Each Fortress has 35 HP, never heals, and retaliates with D8 and Hit 5 when attacked by a soldier able to land on the Fortress hex. Destroy the opposing Fortress to win.
+
+FINAL SIEGE
+If both armies are defeated before either Fortress falls, trebuchets fire simultaneously. Each rolls D8 independently: 4–8 hits for 7 HP, 1–3 misses. Both Fortresses can fall at once, causing MUTUALLY ASSURED DESTRUCTION.
+
+MODES
+Single Player versus CPU, Pass & Play on one phone, or Online 2 Player with Zompa's turns-v1 SDK. Zompa supplies Help, Back, Audio, Pause, invitations, and matchmaking.
