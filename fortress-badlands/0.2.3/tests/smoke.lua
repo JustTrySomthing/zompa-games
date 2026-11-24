@@ -5,7 +5,7 @@ local s=r.new(1234)
 eq(#s.units,20);eq(r.count(s,1),10);eq(r.count(s,2),10)
 eq(r.FORT_HP,35);eq(r.FORT_DIE,8);eq(r.FORT_HIT,5)
 eq(r.SIEGE_DIE,8);eq(r.SIEGE_HIT,7)
-for _,c in pairs(r.classes) do eq(c.die,8);assert(c.hit==5 or c.hit==7) end
+for _,c in pairs(r.classes) do assert(c.die==nil and c.attack==nil);assert(c.hit==5 or c.hit==7) end
 eq(r.classes.knight.hp,15)
 local seen={}
 for _,u in ipairs(s.units) do
