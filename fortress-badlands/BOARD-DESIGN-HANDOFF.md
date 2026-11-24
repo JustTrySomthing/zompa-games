@@ -48,16 +48,40 @@ The Fortress should be centered in the narrow rear rank at `(R01,C04)` for blue 
 - One hexagonal badge per piece, centered in its square; badge large enough to nearly fill the inset hexagon without overlapping the grid. Same artwork/silhouette for both kingdoms; **navy/steel/gold vs burgundy/steel/gold**, readable at phone size without tiny letter labels.
 - Keep existing user-approved unit inspection, move/attack confirmation, and slow, readable dice battle overlay. Remove large permanent banners, scenery, and distracting top/bottom boxes; obey the Zompa host toolbar and Android insets.
 
-## Confirmed piece count and deployment
+## Final starting army — movement, health, hit strength and placement
 
-**Confirmed by the user:** 14 mobile units **plus one Fortress** per kingdom, totaling **15 playing pieces per kingdom** (30 pieces across both sides). The 7×10 stepped board has exactly **15 legal starting squares** per side across its three deployment ranks (3 + 5 + 7), so all these positions will be occupied initially.
+**Confirmed:** exactly 14 mobile units **plus 1 Fortress** per kingdom. Each has the same five classes and mirrored positions. No piece may jump over an occupied square.
 
-- Rear top rank R01: two mobile units at C03 and C05, blue Fortress at C04.
-- Second top rank R02: five mobile units at C02–C06.
-- Third top rank R03: seven mobile units at C01–C07.
-- Bottom ranks R08–R10 mirror the top, with the red Fortress at R10,C04 and Player 1 at the bottom.
+| Class / icon | Units | Move (squares) | Health | Fixed hit damage on winning D8 exchange |
+|---|---:|---:|---:|---:|
+| Soldier / helmet | **4** | **2** | **22** | **5** |
+| Wizard / pointed hat | **2** | **1** | **16** | **8** |
+| Assassin / dagger | **3** | **3** | **14** | **6** |
+| Barbarian / battle axe | **3** | **2** | **19** | **6** |
+| Ogre / spiked club | **2** | **1** | **28** | **6** |
+| Fortress / fortified structure | **1** | 0 | 35 | 5 defensive damage |
 
-**Still needs a precise placement preview:** choose the distribution and placement of Soldier/helmet, Wizard/hat, Assassin/dagger, Barbarian/axe, and Ogre/spiked-club motifs across those 14 unit slots. Do not guess extra helmets or change the requested stair-step mask; show a strict grid wireframe and confirm the roster before applying artwork.
+**Rationale:** Soldier is tough and reliable, Barbarian sacrifices durability for stronger hits at the same speed, Assassin sacrifices health for maximum speed, Wizard is fragile and slow but hits hardest, Ogre is very durable but slow. All character and Fortress defense rolls use the same D8. The Fortress and Final Siege rules otherwise stay unchanged. Numbers are the new balancing baseline for the redesigned roster, not yet a validated whole-match balance.
+
+Exact symmetric arrangement, blue at the top and red at the bottom; `.` denotes an empty middle-field cell and `#` denotes a genuinely absent cell:
+
+```
+       C1 C2 C3 C4 C5 C6 C7
+R01    #  #  S  F  S  #  #
+R02    #  O  W  B  W  O  #
+R03    A  S  B  A  B  S  A
+R04    .  .  .  .  .  .  .
+R05    .  .  .  .  .  .  .
+R06    .  .  .  .  .  .  .
+R07    .  .  .  .  .  .  .
+R08    A  S  B  A  B  S  A
+R09    #  O  W  B  W  O  #
+R10    #  #  S  F  S  #  #
+```
+
+S=Soldier, F=Fortress, O=Ogre, W=Wizard, B=Barbarian, A=Assassin. Each kingdom occupies 3 + 5 + 7 cells, totaling **14 troops + Fortress**. The 7×10 board has 58 playable full squares and 12 absent squares; no trimming or distortion.
+
+The exact board mask and 14-piece placement are now decided for the wireframe. The user must approve the wireframe before artwork is applied. Existing published version stays unchanged.
 
 ## Implementation constraints and validation
 - Apply the *same cell mask* to rendering, touch hit-testing, movement pathfinding, target validation, CPU decisions, starting formation, animations, and online deterministic replay; absent squares are impassable, unrendered, and untappable.
