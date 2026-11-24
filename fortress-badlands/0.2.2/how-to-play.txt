@@ -1,0 +1,25 @@
+FORTRESS: THE BADLANDS — HOW TO PLAY
+
+GOAL
+Destroy the enemy Fortress. Each kingdom has ten soldiers; Player 1 starts at the bottom and Player 2 (or CPU) at the top. The Badlands between them are neutral. No territory claiming.
+
+CHOOSE A PIECE
+Tap any soldier to see its character card: class, current/maximum health (HP), Move, Capture, Hit, and battle die. Class colors and symbols differ; the ring color identifies its kingdom. Tap your own soldier on your turn to highlight legal destinations in green and capturable enemies in red. Tap a highlighted green hex to PREVIEW a move, or tap a red enemy to PREVIEW an attack. Read the unit card, then tap the MOVE or ATTACK button to confirm. The CANCEL button lets you pick another destination. Tapping an enemy without first selecting your soldier shows its stats without initiating combat.
+
+ONE ACTION PER TURN
+Move or capture with ONE soldier, then the other player takes a turn. Move = how many empty hexes you can travel; you cannot pass through any soldier or Fortress. Capture = maximum distance to select an enemy for battle. Archers and Wizards can capture farther than they normally move. Attacks need an unobstructed line. Knights cannot jump over units.
+
+D8 BATTLE
+Both combatants roll a D8 at the same time. The HIGHER roll wins that exchange and deals exactly the fixed Hit points printed on its card. The lower roller deals no damage. A tie does no damage, so roll again. Watch the two opponents on screen: their D8s roll, the winning character strikes, and the health bar decreases by its fixed Hit value. Exchanges play at a readable pace until one combatant has 0 HP. The winner stays alive: the attacking winner takes the defeated soldier's hex (like Chess), or the defending winner holds its original position. The loser is removed. The result stays visible until you tap Continue to return to the board.
+
+HEALTH
+Damage carries over. After defeating a soldier, a surviving victor automatically heals 4–10 HP, up to its maximum. The Fortress cannot heal.
+
+FORTRESS
+The Fortress starts with 35 HP. It never moves or attacks proactively. When directly attacked, its defenders roll a D8, dealing 5 damage on each successful exchange. Destroying the opposing Fortress wins the game.
+
+FINAL SIEGE
+If both armies are eliminated without a Fortress being destroyed, each surviving Fortress launches trebuchet volleys simultaneously. Both roll their own D8. Rolls 4–8 hit for 7 damage; rolls 1–3 miss. Trebuchet volleys are shown at a readable pace. BOTH may hit in one round, even if their rolls match. If both Fortresses fall together, the ending is MUTUALLY ASSURED DESTRUCTION.
+
+MODES
+Single Player: you are Player 1 against the CPU. Pass & Play: share one device. Online 2-Player: invite a friend through Zompa; the app handles the match and turn delivery. The Zompa toolbar provides Back, Help, Audio, and Pause.
