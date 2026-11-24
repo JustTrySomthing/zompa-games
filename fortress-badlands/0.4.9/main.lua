@@ -221,7 +221,7 @@ local function paintField()
             sx+q,sy+q*.36,sx-q*.7,sy+q*.55)
         end
         if seed%3~=0 then
-          local sx=x+R*((seed%11-5)/22),sy=y+R*((seed%7-3)/18)
+          local sx,sy=x+R*((seed%11-5)/22),y+R*((seed%7-3)/18)
           g.setColor(.20,.22,.19,.20)
           g.setLineWidth(math.max(.55,R*.016))
           g.line(sx-R*.13,sy-R*.06,sx-R*.02,sy+R*.055,
