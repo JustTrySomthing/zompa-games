@@ -302,7 +302,7 @@ function M.serialize(s)
 end
 function M.restore(data)
   if type(data)~='string' or #data>262144 then return nil,'Invalid save.' end
-  local seed,str=data:match('^v2|(%d+)|(.*)
+  local seed,str=data:match('^v2|(%d+)|(.*)$')
   if not seed or #seed>12 then return nil,'Unrecognized save version.' end
   local tokens={};for t in str:gmatch('[^,]+') do tokens[#tokens+1]=t end
   if #tokens>512 then return nil,'Too many turns.' end
