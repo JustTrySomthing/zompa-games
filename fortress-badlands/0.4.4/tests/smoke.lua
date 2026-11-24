@@ -69,9 +69,16 @@ for seed=1,450 do
   assert(ok,e)
   assert(e.heal and e.heal.roll>=1 and e.heal.roll<=8)
   observed[e.heal.roll]=true
-  local restored,err=r.restore(r.serialize(match))
-  assert(restored,err)
-  assert(restored.rng==match.rng,'healing roll alters replay RNG')
+  -- Direct custom-position tests cannot use the opening-board replay log.
+  -- Independently reconstruct the same test position and seed for parity.
+  local mirror=r.new(seed*23)
+  for _,unit in ipairs(mirror.units) do if unit.id~=8 and unit.id~=22 then unit.hp=0 end end
+  mirror.units[8].r,mirror.units[8].c,mirror.units[8].hp=5,2,14
+  mirror.units[22].r,mirror.units[22].c,mirror.units[22].hp=4,2,14
+  mirror.turn=1
+  local ok2,e2=r.apply(mirror,{type='attack',id=8,r=4,c=2})
+  assert(ok2,e2)
+  assert(e2.heal.roll==e.heal.roll and mirror.rng==match.rng,'D8 healing must replay identically')
 end
 for value=1,8 do assert(observed[value],'D8 reward lacks outcome '..value) end
 local clean=r.new(4217)
