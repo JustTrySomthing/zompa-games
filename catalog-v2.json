@@ -477,6 +477,24 @@
       "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.2.1/Fortress-Badlands-v0.2.1.zomp",
       "sha256": "cbcb8fb32a81983cd16724ef318e1f4dfbb21f45ecd0059d382c8c5500166d6c",
       "size": 27770
+    },
+    {
+      "id": "fortress-badlands",
+      "title": "Fortress: The Badlands (Prototype)",
+      "version": "0.2.2",
+      "build": 4,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "localSaves": true,
+      "minZompaBuild": 56,
+      "onlineProtocol": "turns-v1",
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.2.2/Fortress-Badlands-v0.2.2.zomp",
+      "sha256": "ef284ba551fa34a115e2ab1d8ab138f7799de4af51aa551878d950768ef0b34a",
+      "size": 27825
     }
   ],
   "games": [
@@ -516,8 +534,8 @@
     {
       "id": "fortress-badlands",
       "title": "Fortress: The Badlands (Prototype)",
-      "version": "0.2.2",
-      "build": 4,
+      "version": "0.2.3",
+      "build": 5,
       "modes": [
         "solo",
         "local",
@@ -527,9 +545,9 @@
       "minZompaBuild": 56,
       "onlineProtocol": "turns-v1",
       "format": "zomp",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.2.2/Fortress-Badlands-v0.2.2.zomp",
-      "sha256": "ef284ba551fa34a115e2ab1d8ab138f7799de4af51aa551878d950768ef0b34a",
-      "size": 27825
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.2.3/Fortress-Badlands-v0.2.3.zomp",
+      "sha256": "8f2866b95ee257c027d91abe10a653111479827ad89439b4905a7d5e1fc34f18",
+      "size": 28804
     }
   ]
 }
