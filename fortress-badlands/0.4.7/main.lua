@@ -826,7 +826,7 @@ local function drawBattleOverlay()
     end
     drawD8(x+ww*.5,dieY,face,true,not bonusDone,winnerOwner,1.55)
   end
-  local bannerY=y+hh*.742
+  local bannerY=y+hh*.70
   local bannerH=math.max(35,math.min(64,hh*.103))
   overlay.continueBox=nil
   overlay.healRollBox=nil
@@ -866,7 +866,7 @@ local function drawBattleOverlay()
     if event.heal then
       local phrase=(winnerOwner==1 and 'RED' or 'BLUE')..
         ' ROLLS FOR VICTORY BONUS'
-      text(phrase,x+8,y+hh*.845,ww-16,'center',fonts.stat)
+      text(phrase,x+8,y+hh*.83,ww-16,'center',fonts.stat)
       if overlay.autoHeal then
         text('WAITING FOR ROLL…',bx,by+9,bw,'center',fonts.stat)
       else
