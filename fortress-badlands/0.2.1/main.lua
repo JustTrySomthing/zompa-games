@@ -266,6 +266,67 @@ local function battleFrame()
   local defenderHP=applied and round and round.defenderHp or previous and previous.defenderHp or event.defenderHpStart
   return index,count,round,phase,finished,attackerHP,defenderHP
 end
+-- Readable graybox figures until finished character art is ready.
+-- Different silhouettes and visible weapons make the fighters identifiable by class.
+local function drawBattleFigure(kind,cx,cy,r)
+  local function poly(points) love.graphics.polygon('fill',table.unpack(points)) end
+  local function line(points,width)
+    love.graphics.setLineWidth(width or r*.11)
+    love.graphics.line(table.unpack(points))
+  end
+  local armor={
+    warrior={.33,.62,.68},barbarian={.66,.39,.25},archer={.33,.58,.33},
+    wizard={.50,.40,.78},knight={.71,.78,.85},
+  }
+  color(armor[kind] or palette.top)
+  poly({cx-r*.48,cy+r*.68,cx-r*.34,cy+r*.04,cx+r*.34,cy+r*.04,cx+r*.48,cy+r*.68})
+  love.graphics.setColor(.95,.77,.61,1)
+  love.graphics.circle('fill',cx,cy-r*.30,r*.245)
+  -- The helmet/hood is a class-specific silhouette, not a tiny text abbreviation.
+  if kind=='wizard' then
+    love.graphics.setColor(.35,.22,.61,1)
+    poly({cx-r*.42,cy-r*.46,cx+r*.45,cy-r*.46,cx+r*.07,cy-r*1.02})
+    love.graphics.rectangle('fill',cx-r*.48,cy-r*.5,r*.96,r*.12)
+    love.graphics.setColor(.86,.76,.44,1)
+    line({cx+r*.45,cy+r*.46,cx+r*.45,cy-r*.55},r*.095)
+    love.graphics.circle('fill',cx+r*.45,cy-r*.65,r*.16)
+  elseif kind=='archer' then
+    love.graphics.setColor(.15,.34,.23,1)
+    poly({cx-r*.31,cy-r*.58,cx-r*.05,cy-r*.83,cx+r*.28,cy-r*.58,cx+r*.31,cy-r*.25,
+      cx+r*.18,cy-r*.48,cx-r*.18,cy-r*.48,cx-r*.32,cy-r*.25})
+    love.graphics.setColor(.92,.80,.52,1)
+    line({cx+r*.48,cy-r*.69,cx+r*.79,cy-r*.29,cx+r*.82,cy+r*.33,cx+r*.49,cy+r*.74},r*.085)
+    line({cx+r*.48,cy-r*.69,cx+r*.49,cy+r*.74},r*.043)
+    line({cx+r*.27,cy,cx+r*.98,cy},r*.065)
+  elseif kind=='barbarian' then
+    love.graphics.setColor(.36,.23,.15,1)
+    poly({cx-r*.26,cy-r*.50,cx+r*.26,cy-r*.50,cx+r*.32,cy-r*.27,cx-r*.32,cy-r*.27})
+    love.graphics.setColor(.84,.82,.67,1)
+    poly({cx-r*.26,cy-r*.52,cx-r*.63,cy-r*.82,cx-r*.48,cy-r*.32})
+    poly({cx+r*.26,cy-r*.52,cx+r*.63,cy-r*.82,cx+r*.48,cy-r*.32})
+    love.graphics.setColor(.76,.78,.83,1)
+    line({cx+r*.46,cy+r*.52,cx+r*.63,cy-r*.52},r*.105)
+    poly({cx+r*.40,cy-r*.61,cx+r*.87,cy-r*.68,cx+r*.87,cy-r*.27,cx+r*.52,cy-r*.24})
+  elseif kind=='knight' then
+    love.graphics.setColor(.79,.84,.88,1)
+    poly({cx-r*.30,cy-r*.54,cx+r*.30,cy-r*.54,cx+r*.31,cy-r*.16,cx-r*.31,cy-r*.16})
+    love.graphics.setColor(.17,.25,.35,1)
+    love.graphics.rectangle('fill',cx-r*.22,cy-r*.28,r*.44,r*.075)
+    love.graphics.setColor(.88,.89,.94,1)
+    line({cx+r*.50,cy+r*.58,cx+r*.77,cy-r*.68},r*.11)
+    love.graphics.setColor(.73,.19,.22,1)
+    poly({cx-r*.57,cy+r*.02,cx-r*.25,cy+r*.03,cx-r*.27,cy+r*.55,cx-r*.43,cy+r*.78,cx-r*.58,cy+r*.50})
+  else -- Warrior with sword and shield
+    love.graphics.setColor(.60,.68,.77,1)
+    poly({cx-r*.27,cy-r*.54,cx+r*.27,cy-r*.54,cx+r*.32,cy-r*.31,cx-r*.32,cy-r*.31})
+    love.graphics.setColor(.17,.24,.32,1)
+    love.graphics.rectangle('fill',cx-r*.20,cy-r*.31,r*.40,r*.072)
+    love.graphics.setColor(.89,.89,.90,1)
+    line({cx+r*.47,cy+r*.66,cx+r*.81,cy-r*.67},r*.105)
+    love.graphics.setColor(.70,.31,.28,1)
+    poly({cx-r*.64,cy-r*.02,cx-r*.25,cy-r*.02,cx-r*.34,cy+r*.64,cx-r*.48,cy+r*.79,cx-r*.64,cy+r*.59})
+  end
+end
 local function drawCombatant(kind,cx,cy,rad,team,hit,impact)
   color(teamColors[team] or palette.gold)
   love.graphics.circle('fill',cx,cy,rad*1.05)
@@ -286,7 +347,7 @@ local function drawCombatant(kind,cx,cy,rad,team,hit,impact)
     love.graphics.setColor(.16,.19,.23,1)
     love.graphics.rectangle('fill',cx-rad*.18,cy+rad*.10,rad*.36,rad*.48)
   else
-    emblem(kind,cx,cy,rad*.68)
+    drawBattleFigure(kind,cx,cy,rad)
   end
 end
 local function drawD8(cx,cy,n,winning)
