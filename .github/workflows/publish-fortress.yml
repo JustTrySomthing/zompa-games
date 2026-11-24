@@ -56,7 +56,7 @@ jobs:
              .minZompaBuild >= 56 and
              (.modes | sort == ["local","online","solo"])' "$source/zompa.json"
           cmp "$source/zompa.lua" sdk-host/sdk/zompa.lua
-          (cd "$source" && python3 tests/run_lua.py tests/smoke.lua tests/square_grid_smoke.lua tests/landing_smoke.lua tests/ui_smoke.lua tests/ux_smoke.lua tests/cpu_visual_smoke.lua tests/autoplay.lua)
+          (cd "$source" && python3 tests/run_lua.py tests/smoke.lua tests/square_grid_smoke.lua tests/landing_smoke.lua tests/ui_smoke.lua tests/ux_smoke.lua tests/cpu_visual_smoke.lua tests/handoff_smoke.lua tests/autoplay.lua)
           filename="Fortress-Badlands-v$version.zomp"
           python3 sdk-host/sdk/zomp.py build "$source" "out/$filename" --require-three-modes
           python3 sdk-host/sdk/zomp.py check "out/$filename" --require-three-modes
