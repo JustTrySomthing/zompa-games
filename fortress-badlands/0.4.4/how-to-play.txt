@@ -1,0 +1,34 @@
+FORTRESS: THE BADLANDS — HOW TO PLAY
+
+LOOK AT YOUR PIECES
+Tap a piece to read its large card near the top of the screen: picture, name, kingdom, HP, MOVE, HIT. Red trim belongs to Player 1 (bottom); blue to Player 2 (top). Only injured units show a small health bar on the board. Full health is visible on the card.
+
+YOUR TURN
+Tap one of your pieces. Bright GREEN hexagons with center dots are open destinations; RED crossed swords on an enemy means you can land there and fight. Tap a destination and check it, then press MOVE HERE or ATTACK NOW. CANCEL changes your target. Each turn is one movement or attack.
+
+ENEMY TURN
+Watch the opponent's piece move across the board. If it attacks, the battle scene begins after the movement, so you can see what happened.
+
+D8 BATTLES
+Both sides roll a D8. The higher roll wins that exchange, deals that character's fixed HIT damage, and reduces the opponent's HP. A tie causes no damage. Watch each roll, successful strike, and health decrease. Exchanges continue until one piece falls; the surviving winner stays on its square (or takes the defeated enemy's square) and automatically heals 1–8 HP up to its maximum. The result screen stays open until you press CONTINUE.
+
+GOAL
+Destroy the enemy Fortress. Each kingdom has fourteen soldiers; Player 1 starts at the bottom and Player 2 (or CPU) at the top. The Badlands between them are neutral. No territory claiming.
+
+HEALTH
+Damage carries over. After defeating a soldier, the surviving winner receives 1–8 HP of healing (not above maximum). After each battle, tap ROLL D8 TO HEAL to reveal the reward, then CONTINUE. Healing is already determined during combat so both online devices agree.
+
+FORTRESS
+The Fortress starts with 35 HP. It never moves or attacks proactively. When directly attacked, its defenders roll a D8, dealing 5 damage on each successful exchange. Destroying the opposing Fortress wins the game.
+
+FINAL SIEGE
+If both armies are eliminated without a Fortress being destroyed, each surviving Fortress launches trebuchet volleys simultaneously. Both roll their own D8. Rolls 4–8 hit for 7 damage; rolls 1–3 miss. Trebuchet volleys are shown at a readable pace. BOTH may hit in one round, even if their rolls match. If both Fortresses fall together, the ending is MUTUALLY ASSURED DESTRUCTION.
+
+MODES
+Single Player: you are Player 1 against the CPU. Pass & Play: share one device. Online 2-Player: invite a friend through Zompa; the app handles the match and turn delivery. The Zompa toolbar provides Back, Help, Audio, and Pause.
+
+VISUALS
+All movement rings and playing pieces are centered on the same painted square. Battle portraits show only their hexagonal badges, and the D8 spins in three dimensions before landing on the final result.
+
+BATTLE DISPLAY
+Red and Blue identify kingdoms. Larger fighter portraits, paired dice and health bars show the action. Red damage bubbles (-5, etc.) appear on the unit that lost the roll. A clear kingdom and character victory announcement replaces verbose status text.
