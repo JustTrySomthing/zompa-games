@@ -1,0 +1,46 @@
+FORTRESS: THE BADLANDS — HOW TO PLAY (v0.5.8)
+
+THE NEW BOARD
+The hourglass arena is an 11-row layout of 56 joined hexagons, with row sizes 3,4,5,6,7,6,7,6,5,4,3. The six hexes around a stone are its adjacent spaces. The weathered floor and thin grout separate movement locations without gaps.
+
+YOUR ARMY
+Red (Player 1) begins at the bottom. Blue (Player 2/CPU) starts at the top. Each has 15 movable troops plus the stationary two-tower Fortress in the CENTER hex of the back row.
+
+Four Soldiers: 22 Health, MOVE 1 forward, HIT 4.
+Four Ogres: 28 Health, MOVE 1, HIT 7.
+Three Barbarians: 24 Health, MOVE 2, HIT 6.
+Two Assassins: 18 Health, MOVE LINE, HIT 6.
+Two Wizards: 24 Health, TELEPORT 2 hexes (over pieces), HIT 8.
+
+The rear rank has Barbarian, Fortress, Barbarian. In front are Wizard, Ogre, Ogre, Wizard. Next are Ogre, Assassin, Barbarian, Assassin, Ogre. The forward rank has an empty end hex, then four Soldiers, then an empty end hex.
+
+TAKING A TURN
+Tap one of your troops to inspect its Health, MOVE and HIT. Choose any highlighted clear hex within that troop's maximum move range, then press MOVE HERE. To attack, select a highlighted enemy-occupied hex and press ATTACK NOW. Each turn takes one move or attack. Troops cannot pass through occupied hexes or missing edge cells. Soldiers can move or attack only one hex forward, toward the enemy Fortress. Choose either adjacent hex in the next row toward the enemy. Ogres move one hex in any direction. Wizards teleport directly to a destination within two hexes, crossing other pieces (but not landing on allies). The Assassin moves any distance in one of the six straight hex directions. It can stop on an empty hex or land on the first enemy in that line to attack. Any occupied hex ends the line. Barbarians may turn while following legal connected hexes.
+
+D8 BATTLE
+Both units roll a D8. The higher die attacks and deals its class's HIT value; equal rolls do no damage. Exchanges continue until a troop falls. If the attacker wins, it moves into the defeated troop's hex. The survivor's winning bonus is another D8, giving 1–8 Health without exceeding its maximum. The button reveals the deterministic reward, so both players' matches agree. The losing side's bonus is revealed automatically when necessary. Red dice represent Red and blue dice represent Blue.
+
+VICTORY AND FORTRESSES
+Destroy the enemy Fortress to win. A Fortress has 50 Health, cannot move or attack proactively, and deals five damage whenever its defensive D8 wins a battle exchange. If both armies are eliminated before either Fortress falls, both use trebuchets in Final Siege: a D8 of 4–8 deals 7 damage to the enemy Fortress, simultaneously. Both Fortresses may fall at once. If a side has no legal move or attack, it passes. Two consecutive forced passes end the match in a stalemate.
+
+MODES
+Single Player: Red versus Blue CPU. Pass & Play: two players share a device. Online 2-Player: Zompa manages invitations, turn syncing, and match delivery. Back, Help, Sound and Pause are host toolbar controls.
+
+UPDATING FROM OLD BOARD VERSIONS
+The movement and Health changes use a new local save format. Start a new Solo or Pass & Play match after updating. Existing online matches use their pinned version.
+
+VISUAL INDICATORS
+The illuminated unit is selected; gold outlines indicate possible moves, and red crossed swords indicate an attack destination. Injured units show a small health bar. Battle damage rises near the HP bar, and the arcade victory banner precedes the ROLL / CONTINUE control.
+
+ATTACK APPROACH
+The target remains on its hex while the attacker moves onto it, above the defender. Only after the approach does the D8 battle decide the outcome.
+
+
+NEW CHARACTER DETAIL ART (LOCAL PREVIEW)
+Each class now has an individual Red and Blue side-view portrait with its weapon.
+The top info card reads RED SOLDIER, BLUE WIZARD, etc., plus the current and
+maximum Health (for example HEALTH 17 / 22), MOVE and HIT. No player numbers appear in
+this card. Soldier MOVE 1 reaches the adjacent forward hexes; Wizard MOVE 2 may
+teleport over other pieces, without landing on a friendly piece. The Ogre's
+weapon token is a spiked wooden club, the Wizard's is a magic staff, and the
+center Fortress tile shows a squat twin-tower stone fort with a gate.
