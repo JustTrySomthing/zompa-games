@@ -48,12 +48,16 @@ The Fortress should be centered in the narrow rear rank at `(R01,C04)` for blue 
 - One hexagonal badge per piece, centered in its square; badge large enough to nearly fill the inset hexagon without overlapping the grid. Same artwork/silhouette for both kingdoms; **navy/steel/gold vs burgundy/steel/gold**, readable at phone size without tiny letter labels.
 - Keep existing user-approved unit inspection, move/attack confirmation, and slow, readable dice battle overlay. Remove large permanent banners, scenery, and distracting top/bottom boxes; obey the Zompa host toolbar and Android insets.
 
-## Piece-count and deployment detail still requiring confirmation
-The user explicitly said **14 pieces per kingdom**. It has *not* been explicitly settled whether that **includes the Fortress**, or means **14 mobile units plus the Fortress**. The stepped first three ranks offer `3 + 5 + 7 = 15` playable starting squares per kingdom:
-- 14 mobile units + Fortress would fill all 15 squares.
-- 14 pieces including Fortress would leave exactly one empty starting square per side.
+## Confirmed piece count and deployment
 
-Do not arbitrarily add extra units or duplicate helmets to fill squares until this distinction is resolved. The class distribution across the five updated names and exact starting squares must be approved after a mechanically exact wireframe preview. The user asked to move the outermost pieces inward, remove two helmet positions in the second rank near the Fortress, and use a three-rank, symmetrical formation; preserve these placement objectives when making the layout.
+**Confirmed by the user:** 14 mobile units **plus one Fortress** per kingdom, totaling **15 playing pieces per kingdom** (30 pieces across both sides). The 7×10 stepped board has exactly **15 legal starting squares** per side across its three deployment ranks (3 + 5 + 7), so all these positions will be occupied initially.
+
+- Rear top rank R01: two mobile units at C03 and C05, blue Fortress at C04.
+- Second top rank R02: five mobile units at C02–C06.
+- Third top rank R03: seven mobile units at C01–C07.
+- Bottom ranks R08–R10 mirror the top, with the red Fortress at R10,C04 and Player 1 at the bottom.
+
+**Still needs a precise placement preview:** choose the distribution and placement of Soldier/helmet, Wizard/hat, Assassin/dagger, Barbarian/axe, and Ogre/spiked-club motifs across those 14 unit slots. Do not guess extra helmets or change the requested stair-step mask; show a strict grid wireframe and confirm the roster before applying artwork.
 
 ## Implementation constraints and validation
 - Apply the *same cell mask* to rendering, touch hit-testing, movement pathfinding, target validation, CPU decisions, starting formation, animations, and online deterministic replay; absent squares are impassable, unrendered, and untappable.
