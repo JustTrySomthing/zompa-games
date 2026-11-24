@@ -93,7 +93,7 @@ tapCell(7,0)
 assert(state.moves==2)
 love.update(1.18)
 local revealed=paint()
-has(revealed,'D8')
+has(revealed,'ROUND')
 love.update(1.00)
 local impact=paint()
 for _=1,10 do
