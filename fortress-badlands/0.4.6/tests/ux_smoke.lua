@@ -114,9 +114,20 @@ has(impact,' HITS!')
 -- The last exchange holds its impact briefly, then shows the full result.
 love.update(70)
 local finished=paint()
-assert(finished:find('CONTINUE',1,true) or finished:find('ROLL FOR +1 TO +8 HP',1,true),'reward or continue must be available')
-assert(finished:find(' WINS!',1,true) or finished:find(' WINS THE MATCH!',1,true),
-  'named kingdom and character battle result required')
+-- If Blue wins, the CPU starts its visual-only bonus roll automatically.
+-- Wait for that animation, then require an actionable Continue result.
+if finished:find('HEALTH BONUS!',1,true)
+  and not finished:find('CONTINUE',1,true) then
+  love.update(1.1)
+  finished=paint()
+end
+assert(finished:find('CONTINUE',1,true) or finished:find('ROLL FOR +1 TO +8 HP',1,true),
+  'reward or continue must be available')
+assert(finished:find(' WINS!',1,true)
+  or finished:find(' WINS THE MATCH!',1,true)
+  or finished:find('HEALTH BONUS +',1,true)
+  or finished:find('HEALTH FULL',1,true),
+  'battle must show the winning unit or its visible healing result')
 local hh=math.min(height-12,620);local y=(height-hh)/2
 if finished:find('ROLL FOR +1 TO +8 HP',1,true) then
   tapXY(width*.5,y+hh-32)

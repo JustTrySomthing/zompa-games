@@ -1209,7 +1209,7 @@ function love.update(dt)
   if overlay then
     overlay.elapsed=overlay.elapsed+dt
     if overlay.type=='battle' and overlay.autoHeal and not overlay.healRevealed
-      and overlay.elapsed>=#overlay.event.rounds*EXCHANGE_SECONDS+FINAL_BLOW_HOLD then
+      and overlay.elapsed>=#overlay.event.rounds*EXCHANGE_SECONDS+FINAL_BLOW_HOLD+1.35 then
       -- The CPU visibly rolls after the result, not offscreen during combat.
       overlay.healRevealed=true
       overlay.healRolling=0
