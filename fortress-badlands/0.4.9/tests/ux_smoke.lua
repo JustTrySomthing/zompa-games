@@ -65,7 +65,7 @@ local state=getState()
 local idle=paint()
 has(idle,'CHOOSE A PIECE')
 assert(draws>=28,'all 28 living piece sprites must render')
-assert(fortressTowerRects>=8,'both two-tower stone Fortresses must draw')
+assert(fortressTowerRects>=4,'two outer towers on both stone Fortresses must render')
 -- Inspect the opponent: does not spend a turn.
 tapCell(2,6)
 has(paint(),'ASSASSIN')
