@@ -96,9 +96,11 @@ local revealed=paint()
 has(revealed,'ROUND')
 love.update(1.00)
 local impact=paint()
-for _=1,10 do
+-- Sample short battle phases instead of jumping across several exchanges.
+-- Each hit cue is intentionally brief in the new polished presentation.
+for _=1,180 do
   if impact:find(' HITS!',1,true) then break end
-  love.update(3.15);impact=paint()
+  love.update(.12);impact=paint()
 end
 has(impact,' HITS!')
 -- The last exchange holds its impact briefly, then shows the full result.
