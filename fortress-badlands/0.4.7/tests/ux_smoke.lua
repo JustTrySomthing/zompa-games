@@ -55,7 +55,7 @@ end
 local state=getState()
 local idle=paint()
 has(idle,'CHOOSE A PIECE')
-assert(draws>=29,'board and unit sprite assets should render')
+assert(draws>=28,'the 28 unit sprites should render over procedural hex field')
 -- Inspect the opponent: does not spend a turn.
 tapCell(2,6)
 has(paint(),'ASSASSIN')
