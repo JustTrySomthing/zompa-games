@@ -1,0 +1,36 @@
+FORTRESS SIEGE: FINAL CONQUEST — HOW TO PLAY
+
+From the opening screen, choose How to Play to practice moving, attacking, and claiming a reward on a separate board.
+
+Win by destroying the enemy Fortress. Red starts at the bottom and Blue at the top. Each side has 15 troops and a Fortress with 50 Health. Pieces at a quarter health or lower pulse on the board. Choose Start Game to reach the opening roll, then roll a D12 for each side. In online matches, the inviter presses Roll. The higher roll goes first. Ties reroll automatically.
+
+YOUR TURN
+Select one piece and choose one action. Gold hexes show where it can move. Crossed swords mark enemies it can attack. The inspection card shows Move and Range in hexes, with the attack’s Power next to Range. Movement ends on an empty hex. Attacking leaves your piece on its current hex, even if it defeats the enemy. The Target card shows the defender and Attack Now shows the distance.
+
+Soldiers move one hex forward. Ogres move one hex in any direction. Barbarians move up to two hexes and can turn. Assassins move any distance along a clear straight line. Wizards teleport up to two hexes to an empty hex. Archers move up to two hexes on a clear straight line.
+
+ATTACK RANGE
+Soldiers, Barbarians, and Ogres attack adjacent enemies. Archers can shoot up to three hexes in a straight line. Assassins can strike up to two hexes in a straight line. Wizards can cast at any enemy within two hexes, including targets off a straight line. Other pieces along the line do not block these attacks. A Fortress is stationary. After an enemy attempts to attack it, it can launch boulders on its own turns at targets in the three hex rings in front of it.
+
+BATTLES
+Choose Attack Now. After the Ready for Combat cue, the D12 rolls automatically. A D12 roll must be higher than the target's Shield. A roll equal to or below Shield is repelled and ends the turn. A landed attack removes Health equal to the attacker's Power, down to zero. The defender deals no damage.
+
+When you defeat a target while injured, tap Roll for Reward. The CPU rolls its own rewards automatically. A piece at full Health skips the bonus roll. The D12 restores up to the rolled amount of Health, capped at the attacker's maximum. Press Continue after the result.
+
+FINAL SIEGE
+If both armies are gone and both Fortresses survive, their remaining Health carries into the Final Siege. Both Fortresses roll a D12 at the same time. The higher roll deals 8 damage, and ties deal none. Volleys continue until one Fortress is destroyed.
+
+STATS
+Power and Shield each use a scale of 1–12. Tap a piece for current and maximum Health, Move, Power, Range, and Shield.
+
+Piece         Health  Power  Range  Shield
+Soldier           16      8      1       2
+Assassin          18     10      2       3
+Ogre              24     12      1       5
+Barbarian         25     11      1       5
+Fortress          50      8      3       3
+Wizard            18     10      2       4
+Archer            14      6      3       3
+
+ZOMPA MODES
+Play solo against the CPU, pass and play on one device, or play online. Start a new match to roll for the first turn. Existing online matches use their original version.
