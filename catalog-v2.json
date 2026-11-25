@@ -1071,6 +1071,24 @@
       "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.5.22/Fortress-Badlands-v0.5.22.zomp",
       "sha256": "eb567bd909a1ea3d18f34b09840d3830d44b1af513f938f2ba05a221e3a5cf25",
       "size": 4181432
+    },
+    {
+      "id": "fortress-badlands",
+      "title": "Fortress: The Badlands",
+      "version": "0.5.24",
+      "build": 41,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "localSaves": true,
+      "minZompaBuild": 56,
+      "onlineProtocol": "turns-v1",
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.5.24/Fortress-Badlands-v0.5.24.zomp",
+      "sha256": "170325c51e7c08f89d4fac3431c6c994b3f012f28905539f8e48cee58c11d673",
+      "size": 4182762
     }
   ],
   "games": [
@@ -1109,9 +1127,9 @@
     },
     {
       "id": "fortress-badlands",
-      "title": "Fortress: The Badlands",
-      "version": "0.5.24",
-      "build": 41,
+      "title": "Fortress Siege: Final Conquest",
+      "version": "0.5.28",
+      "build": 45,
       "modes": [
         "solo",
         "local",
@@ -1121,9 +1139,9 @@
       "minZompaBuild": 56,
       "onlineProtocol": "turns-v1",
       "format": "zomp",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v0.5.24/Fortress-Badlands-v0.5.24.zomp",
-      "sha256": "170325c51e7c08f89d4fac3431c6c994b3f012f28905539f8e48cee58c11d673",
-      "size": 4182762
+      "size": 4255436,
+      "sha256": "4a0fa4930fe0d73b61aa2f6a9efa43db319aeb19c8ed5b2ca07e3d35ea3f7c69",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v0.5.28/Fortress-Siege-Final-Conquest-v0.5.28.zomp"
     }
   ]
 }
