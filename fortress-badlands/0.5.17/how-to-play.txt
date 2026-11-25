@@ -1,0 +1,31 @@
+FORTRESS: THE BADLANDS — HOW TO PLAY
+
+Win by destroying the enemy Fortress. Red starts at the bottom and Blue at the top. Each side has 15 troops and a Fortress.
+
+YOUR TURN
+Select one piece and choose one action. Gold hexes show where it can move. Crossed swords mark enemies it can attack. Movement ends on an empty hex. Attacking leaves your piece on its current hex, even if it defeats the enemy.
+
+Soldiers move one hex forward. Ogres move one hex in any direction. Barbarians move up to two hexes and can turn. Assassins move any distance along a clear straight line. Wizards teleport up to two hexes to an empty hex. Archers move up to two hexes on a clear straight line.
+
+ATTACK RANGE
+Most troops attack adjacent enemies. Archers shoot any enemy within three hexes, even over other pieces. A Fortress is stationary. After an enemy attempts to attack it, it can fire on its own turns at targets in the three hex rings in front of it.
+
+BATTLES
+Choose Attack Now, then Roll to stage the attack. A D12 roll must be higher than the target's Shield. A roll equal to or below Shield is repelled and ends the turn. A landed attack removes Health equal to the attacker's Power, down to zero. The defender deals no damage.
+
+When you defeat a target, choose Roll for Bonus. The D12 restores up to the rolled amount of Health, capped at the attacker's maximum. Press Continue after the result. The CPU rolls automatically.
+
+STATS
+Power and Shield each use a scale of 1–12. Tap a piece for current and maximum Health, Move, Power, and Shield.
+
+Piece         Health  Power  Shield
+Soldier           44      6       3
+Assassin          48      8       5
+Ogre              56     12       8
+Barbarian         64     10       8
+Fortress          60      5       3
+Wizard            48      8       7
+Archer            40      4       4
+
+ZOMPA MODES
+Play solo against the CPU, pass and play on one device, or play online. This rules update starts a fresh local match. Existing online matches use their original version.
