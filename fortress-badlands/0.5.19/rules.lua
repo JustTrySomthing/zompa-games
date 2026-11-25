@@ -1,0 +1,404 @@
+-- Zompa Fortress Strategy: pure deterministic rules (no LÖVE dependencies).
+-- Board positions are zero-based (row 0..10, column 0..6); row widths vary.
+local M = {}
+M.ROWS, M.COLS = 11, 7
+M.rowWidths = {3,4,5,6,7,6,7,6,5,4,3}
+M.classes = {
+  soldier   = {hp=16, move=1, forward=true, power=8,  shield=2, name='Soldier', mark='S'},
+  wizard    = {hp=18, move=2, power=10,  shield=4, name='Wizard', mark='W'},
+  assassin  = {hp=18, straight=true, power=10, shield=3, name='Assassin', mark='A'},
+  archer    = {hp=14, move=2, straight=true, range=3, power=6, shield=3, name='Archer', mark='R'},
+  barbarian = {hp=25, move=2, power=11, shield=5, name='Barbarian', mark='B'},
+  ogre      = {hp=24, move=1, power=12, shield=5, name='Ogre', mark='O'},
+  fortress  = {hp=30, move=0, range=3, power=8, shield=3, name='Fortress'},
+}
+M.FORT_HP, M.DIE = M.classes.fortress.hp, 12
+-- True tessellated hex footprint. Each row is indexed left to right, so
+-- neighboring row centers shift by half of one horizontal hex pitch.
+function M.playable(r,c)
+  return type(r)=='number' and type(c)=='number' and r%1==0 and c%1==0
+    and r>=0 and r<M.ROWS and c>=0 and c<M.rowWidths[r+1]
+end
+local on=M.playable
+function M.key(r,c) return r*M.COLS+c end
+function M.fromkey(k) return math.floor(k/M.COLS), k%M.COLS end
+-- Axial coordinates allow exact hex distance/adjacency despite row widths.
+local function axial(r,c)
+  return c+(M.COLS-M.rowWidths[r+1]-r)/2,r
+end
+local function column(q,r)
+  return q-(M.COLS-M.rowWidths[r+1]-r)/2
+end
+local directions={{1,0},{-1,0},{0,1},{-1,1},{0,-1},{1,-1}}
+function M.distance(a,b)
+  local aq,ar=axial(a.r,a.c)
+  local bq,br=axial(b.r,b.c)
+  local dq,dr=aq-bq,ar-br
+  return math.max(math.abs(dq),math.abs(dr),math.abs(dq+dr))
+end
+function M.neighbors(r,c)
+  local out={}
+  if not on(r,c) then return out end
+  local q,rr=axial(r,c)
+  for _,d in ipairs(directions) do
+    local nr=rr+d[2]
+    if nr>=0 and nr<M.ROWS then
+      local nc=column(q+d[1],nr)
+      if on(nr,nc) then out[#out+1]={r=nr,c=nc} end
+    end
+  end
+  return out
+end
+function M.line(a,b)
+  -- Display-only shortest geometric line for future line-of-sight features.
+  -- Captures use the actual obstacle-aware BFS route, not this line.
+  local n=M.distance(a,b);local out={}
+  if n==0 then return {{r=a.r,c=a.c}} end
+  for i=0,n do
+    local t=i/n
+    out[#out+1]={r=math.floor(a.r+(b.r-a.r)*t+.5),c=math.floor(a.c+(b.c-a.c)*t+.5)}
+  end
+  return out
+end
+
+-- Approved 11-row hourglass board: 56 joined hexagons and 15 troops
+-- plus the two-tower fortress per kingdom. Top and bottom mirror exactly.
+-- Red is bottom (rows 7-10), Blue is top (rows 0-3).
+local formation = {
+  -- Rearmost row: Barbarian / Fortress / Barbarian.
+  {r=10,c=0,class='barbarian'}, {r=10,c=2,class='barbarian'},
+  -- Four-hex rank: Wizard / Archer / Archer / Wizard.
+  {r=9,c=0,class='wizard'}, {r=9,c=1,class='archer'},
+  {r=9,c=2,class='archer'}, {r=9,c=3,class='wizard'},
+  -- Five-hex rank: Ogre / Assassin / Barbarian / Assassin / Ogre.
+  {r=8,c=0,class='ogre'}, {r=8,c=1,class='assassin'},
+  {r=8,c=2,class='barbarian'}, {r=8,c=3,class='assassin'},
+  {r=8,c=4,class='ogre'},
+  -- Front rank: four Soldiers, with both flanks open.
+  {r=7,c=1,class='soldier'}, {r=7,c=2,class='soldier'},
+  {r=7,c=3,class='soldier'}, {r=7,c=4,class='soldier'},
+}
+M.formation=formation
+
+local function next_random(s,n)
+  s.rng=(s.rng*48271)%2147483647
+  return 1+(s.rng%n)
+end
+M.next_random=next_random
+function M.initiative(seed)
+  local rng={rng=(seed*40699+73)%2147483646+1}
+  local opening={rounds={}}
+  repeat
+    local red,blue=next_random(rng,M.DIE),next_random(rng,M.DIE)
+    opening.rounds[#opening.rounds+1]={red,blue}
+    if red~=blue then opening.first=red>blue and 1 or 2 end
+  until opening.first
+  return opening
+end
+function M.new(seed,first)
+  seed=math.floor(tonumber(seed) or 1489967)%2147483647
+  if seed<1 then seed=1 end
+  local s={version=18,seed=seed,rng=seed,first=first or 1,turn=first or 1,moves=0,units={},
+    forts={{r=10,c=1,hp=M.FORT_HP,owner=1,id=2*#formation+1,class='fortress'},{r=0,c=1,hp=M.FORT_HP,owner=2,id=2*#formation+2,class='fortress'}},
+    winner=nil,finish=nil,history={},last=nil}
+  for player=1,2 do
+    for _,p in ipairs(formation) do
+      local r=player==1 and p.r or (M.ROWS-1-p.r)
+      s.units[#s.units+1]={id=#s.units+1,owner=player,r=r,c=p.c,
+        class=p.class,hp=M.classes[p.class].hp}
+    end
+  end
+  return s
+end
+function M.copy(s)
+  local d={}
+  for k,v in pairs(s) do
+    if type(v)~='table' then d[k]=v end
+  end
+  local function copy(t)
+    local n={};for k,v in pairs(t) do n[k]=type(v)=='table' and copy(v) or v end;return n
+  end
+  for _,name in ipairs({'units','forts','history','last','previous'}) do
+    if s[name] then d[name]=copy(s[name]) end
+  end
+  return d
+end
+function M.count(s,owner)
+  local n=0;for _,u in ipairs(s.units) do if u.owner==owner and u.hp>0 then n=n+1 end end
+  return n
+end
+function M.occupied(s,r,c)
+  for _,f in ipairs(s.forts) do if f.r==r and f.c==c then return {kind='fort',ref=f,owner=f.owner} end end
+  for _,u in ipairs(s.units) do if u.hp>0 and u.r==r and u.c==c then return {kind='unit',ref=u,owner=u.owner} end end
+end
+function M.piece(s,id)
+  if type(id)~="number" then return nil end
+  return s.units[id] or s.forts[id-2*#formation]
+end
+
+-- Movement ends on an empty hex. Wizard teleport may cross occupied hexes.
+local function destinations(s,id)
+  local u=s.units[id]
+  if not u or u.hp<=0 or u.owner~=s.turn or s.winner then return {},{} end
+  local class=M.classes[u.class]
+  local steps=class.move
+  local empty,parents={},{}
+  local origin=M.key(u.r,u.c)
+  local function mark(r,c,dist,parent)
+    if M.occupied(s,r,c) then return false end
+    local k=M.key(r,c)
+    parents[k],empty[k]=parent,dist
+    return true
+  end
+
+  if class.forward then
+    local forwardRow=u.r+(u.owner==1 and -1 or 1)
+    for _,target in ipairs(M.neighbors(u.r,u.c)) do
+      if target.r==forwardRow then mark(target.r,target.c,1,origin) end
+    end
+    return empty,parents
+  end
+
+  if class.straight then
+    local q0,r0=axial(u.r,u.c)
+    for _,direction in ipairs(directions) do
+      local parent=origin
+      local q,r=q0,r0
+      local distance=0
+      while not steps or distance<steps do
+        q,r=q+direction[1],r+direction[2]
+        if r<0 or r>=M.ROWS then break end
+        local c=column(q,r)
+        distance=distance+1
+        if not on(r,c) then break end
+        if not mark(r,c,distance,parent) then break end
+        parent=M.key(r,c)
+      end
+    end
+    return empty,parents
+  end
+
+  if u.class=='wizard' then
+    for r=0,M.ROWS-1 do
+      for c=0,M.rowWidths[r+1]-1 do
+        local dist=M.distance(u,{r=r,c=c})
+        if dist>0 and dist<=steps then mark(r,c,dist,origin) end
+      end
+    end
+    return empty,parents
+  end
+
+  local seen={[origin]=true}
+  local queue={{r=u.r,c=u.c,dist=0}}
+  local head=1
+  while queue[head] do
+    local cur=queue[head];head=head+1
+    if cur.dist<steps then
+      for _,p in ipairs(M.neighbors(cur.r,cur.c)) do
+        local k=M.key(p.r,p.c)
+        if not seen[k] then
+          seen[k]=true
+          local clear=mark(p.r,p.c,cur.dist+1,M.key(cur.r,cur.c))
+          if clear then queue[#queue+1]={r=p.r,c=p.c,dist=cur.dist+1} end
+        end
+      end
+    end
+  end
+  return empty,parents
+end
+function M.route(s,id,r,c)
+  if not on(r,c) then return nil end
+  local empty,parents=destinations(s,id)
+  local target=M.key(r,c)
+  if not empty[target] then return nil end
+  local u=s.units[id]
+  local origin=M.key(u.r,u.c)
+  local reversed={};local k=target
+  while k do
+    local row,col=M.fromkey(k)
+    reversed[#reversed+1]={r=row,c=col}
+    if k==origin then break end
+    k=parents[k]
+    if not k then return nil end
+  end
+  if k~=origin then return nil end
+  local out={}
+  for i=#reversed,1,-1 do out[#out+1]=reversed[i] end
+  return out
+end
+-- A two-step Wizard teleport can cross a shared hex edge.
+function M.jumpOver(s,id,r,c)
+  local u=s.units[id]
+  local crossed={}
+  if u.class=='wizard' and M.distance(u,{r=r,c=c})==2 then
+    for _,cell in ipairs(M.neighbors(u.r,u.c)) do
+      local occupant=M.occupied(s,cell.r,cell.c)
+      if occupant and occupant.kind=='unit' and M.distance(cell,{r=r,c=c})==1 then
+        crossed[M.key(cell.r,cell.c)]=true
+      end
+    end
+  end
+  return crossed
+end
+-- Attack range is independent of movement and never changes the attacker's hex.
+function M.inAttackRange(u,target)
+  local distance=M.distance(u,target)
+  if u.class=='fortress' then
+    local forward=(target.r-u.r)*(u.owner==1 and -1 or 1)
+    return u.armed and forward>0 and distance<=M.classes.fortress.range
+  end
+  return distance>0 and distance<=(M.classes[u.class].range or 1)
+end
+function M.moves(s,id)
+  local empty=destinations(s,id)
+  return empty
+end
+function M.attacks(s,id)
+  local u=M.piece(s,id)
+  local targets={}
+  if not u or u.hp<=0 or u.owner~=s.turn or s.winner then return targets end
+  local function add(target,kind)
+    if target.owner~=u.owner and target.hp>0 and M.inAttackRange(u,target) then
+      targets[M.key(target.r,target.c)]={ref=target,owner=target.owner,kind=kind}
+    end
+  end
+  for _,enemy in ipairs(s.units) do add(enemy,'unit') end
+  for _,fort in ipairs(s.forts) do add(fort,'fort') end
+  return targets
+end
+function M.describeAttack(s,act)
+  if not on(act.r,act.c) then return nil end
+  local target=M.attacks(s,act.id)[M.key(act.r,act.c)]
+  if not target then return nil end
+  local u,v=M.piece(s,act.id),target.ref
+  return {type='attack',actor=u.owner,id=u.id,
+    from={r=u.r,c=u.c},to={r=v.r,c=v.c},
+    attackerClass=u.class,defenderClass=v.class,
+    attackerHpStart=u.hp,defenderHpStart=v.hp,shield=M.classes[v.class].shield},v
+end
+function M.actions(s)
+  if s.winner then return {} end
+  local actions={}
+  for id=1,2*#formation+2 do
+    for k in pairs(M.moves(s,id)) do
+      local r,c=M.fromkey(k)
+      actions[#actions+1]={type='move',id=id,r=r,c=c}
+    end
+    for k in pairs(M.attacks(s,id)) do
+      local r,c=M.fromkey(k)
+      actions[#actions+1]={type='attack',id=id,r=r,c=c}
+    end
+  end
+  if #actions==0 then return {{type='pass'}} end
+  table.sort(actions,function(a,b)
+    if a.id~=b.id then return a.id<b.id end
+    if a.type~=b.type then return a.type<b.type end
+    if a.r~=b.r then return a.r<b.r end
+    return a.c<b.c
+  end)
+  return actions
+end
+function M.mustPass(s)
+  return not s.winner and M.actions(s)[1].type=='pass'
+end
+-- Both Fortress rolls are committed atomically with the last troop defeat.
+-- Playback consumes these volleys without taking extra host turns.
+local function finalSiege(s)
+  local red,blue=s.forts[1],s.forts[2]
+  local siege={start={red.hp,blue.hp},volleys={}}
+  local power=M.classes.fortress.power
+  while red.hp>0 and blue.hp>0 do
+    local a,b=next_random(s,M.DIE),next_random(s,M.DIE)
+    local hit=a>b and 1 or b>a and 2 or 0
+    if hit==1 then blue.hp=math.max(0,blue.hp-power)
+    elseif hit==2 then red.hp=math.max(0,red.hp-power) end
+    siege.volleys[#siege.volleys+1]={a=a,b=b,hit=hit,hp={red.hp,blue.hp}}
+  end
+  s.winner=red.hp>0 and 1 or 2
+  s.finish='siege'
+  return siege
+end
+function M.apply(s,act)
+  if s.winner then return false,'Game already ended.' end
+  if type(act)~='table' then return false,'Missing action.' end
+  local player=s.turn
+  local event={actor=player,type=act.type}
+  if act.type=='pass' then
+    if not M.mustPass(s) then return false,'A legal action is available.' end
+    if s.last and s.last.type=='pass' then s.winner,s.finish=0,'stalemate' end
+  elseif act.type=='move' then
+    if not on(act.r,act.c) or not M.moves(s,act.id)[M.key(act.r,act.c)] then
+      return false,'Blocked or out-of-range movement.'
+    end
+    local u=M.piece(s,act.id)
+    event.id=u.id;event.from={r=u.r,c=u.c};event.to={r=act.r,c=act.c}
+    u.r,u.c=act.r,act.c
+  elseif act.type=='attack' then
+    local defender
+    event,defender=M.describeAttack(s,act)
+    if not event then return false,'Target outside attack range.' end
+    local attacker=M.piece(s,act.id)
+    local stats=M.classes[attacker.class]
+    if defender.class=='fortress' then defender.armed=true end
+    event.roll=next_random(s,M.DIE)
+    event.landed=event.roll>event.shield
+    event.damage=event.landed and math.min(defender.hp,stats.power) or 0
+    defender.hp=defender.hp-event.damage
+    event.defenderHpEnd=defender.hp
+    event.defeated=defender.hp==0
+    if event.defeated then
+      local bonus=next_random(s,M.DIE)
+      local actual=math.min(bonus,stats.hp-attacker.hp)
+      attacker.hp=attacker.hp+actual
+      event.heal={roll=bonus,actual=actual}
+      if defender.class=='fortress' then s.winner,s.finish=player,'fortress' end
+    end
+  else
+    return false,'Unknown action.'
+  end
+  if not s.winner and (act.type=='attack' and event.defeated or act.type=='pass')
+    and M.count(s,1)==0 and M.count(s,2)==0 then
+    event.siege=finalSiege(s)
+  end
+  s.history[#s.history+1]=M.encode(act)
+  s.moves=s.moves+1
+  event.winner,event.finish=s.winner,s.finish
+  s.previous,s.last=s.last,event
+  s.turn=3-player
+  return true,event
+end
+function M.encode(a)
+  if a.type=='pass' then return 'P' end
+  return ('%s%d_%d_%d'):format(a.type=='move' and 'M' or 'A',a.id,a.r,a.c)
+end
+function M.decode(token)
+  if token=='P' then return {type='pass'} end
+  if type(token)~='string' then return nil end
+  local kind,id,r,c=token:match('^([MA])(%d+)_(%d+)_(%d+)$')
+  id,r,c=tonumber(id),tonumber(r),tonumber(c)
+  if not id or id<1 or id>2*#formation+2 or (kind=='M' and id>2*#formation) or not on(r,c) then return nil end
+  return {type=kind=='M' and 'move' or 'attack',id=id,r=r,c=c}
+end
+function M.replay(seed,history,first)
+  local s=M.new(seed,first)
+  for i,token in ipairs(history) do
+    local action=M.decode(token)
+    if not action then return nil,'Malformed token at move '..i end
+    local ok,err=M.apply(s,action)
+    if not ok then return nil,'Illegal move '..i..': '..err end
+  end
+  return s
+end
+function M.serialize(s)
+  return ('v18|%d|%d|%s'):format(s.seed,s.first,table.concat(s.history,','))
+end
+function M.restore(data)
+  if type(data)~='string' or #data>262144 then return nil,'Invalid save.' end
+  local seed,first,str=data:match('^v18|(%d+)|([12])|(.*)$')
+  if not seed then seed,str=data:match('^v17|(%d+)|(.*)$') end
+  if not seed or #seed>12 then return nil,'Unrecognized save version.' end
+  local tokens={}
+  for t in str:gmatch('[^,]+') do tokens[#tokens+1]=t end
+  return M.replay(tonumber(seed),tokens,tonumber(first))
+end
+return M
