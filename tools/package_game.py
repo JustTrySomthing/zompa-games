@@ -2,10 +2,11 @@
 """Build the official Drop Four .zomp archive and its catalog entry."""
 import hashlib
 import json
-import re
 import sys
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+
+from catalog_art import add_catalog_art
 
 root = Path(__file__).resolve().parent.parent
 out = Path(sys.argv[1])
@@ -73,37 +74,6 @@ catalog = {
         "sha256": hashlib.sha256(package.read_bytes()).hexdigest(),
     }],
 }
-art = root / "catalog-art" / manifest["id"] / version
-preview_path = art / "preview.json"
-if preview_path.is_file():
-    preview = json.loads(preview_path.read_text())
-    cover = preview.get("cover")
-    shots = preview.get("screenshots", [])
-    if cover is not None and cover != "cover.webp":
-        raise ValueError("Cover must be cover.webp")
-    if not isinstance(shots, list) or len(shots) > 3:
-        raise ValueError("Use up to three screenshots")
-    files = [cover] if cover else []
-    for shot in shots:
-        filename = shot["file"]
-        label = shot["label"]
-        if (not re.fullmatch(r"shot-[1-3]\.webp", filename)
-                or filename in files
-                or not isinstance(label, str)
-                or not 1 <= len(label.strip()) <= 100):
-            raise ValueError("Each screenshot needs a distinct filename and short description")
-        files.append(filename)
-    for filename in files:
-        image = art / filename
-        if not image.is_file() or not 16 <= image.stat().st_size <= 350 * 1024:
-            raise ValueError(f"Missing image or invalid image size: {filename}")
-        with image.open("rb") as stream:
-            header = stream.read(12)
-        if header[:4] != b"RIFF" or header[8:] != b"WEBP":
-            raise ValueError(f"Expected a WebP image: {filename}")
-    if cover:
-        catalog["games"][0]["cover"] = cover
-    if shots:
-        catalog["games"][0]["screenshots"] = shots
+add_catalog_art(root, catalog["games"][0])
 
 (out / "catalog-v2.json").write_text(json.dumps(catalog, indent=2) + "\n")

@@ -6,12 +6,16 @@ on:
       - '.github/fortress-release.json'
       - '.github/workflows/publish-fortress.yml'
       - 'fortress-badlands/**'
+      - 'catalog-art/fortress-badlands/**'
+      - 'tools/catalog_art.py'
   push:
     branches: [main]
     paths:
       - '.github/fortress-release.json'
       - '.github/workflows/publish-fortress.yml'
       - 'fortress-badlands/**'
+      - 'catalog-art/fortress-badlands/**'
+      - 'tools/catalog_art.py'
   workflow_dispatch:
 
 permissions:
@@ -62,7 +66,7 @@ jobs:
           python3 sdk-host/sdk/zomp.py build "$source" "out/$filename" --require-three-modes
           python3 sdk-host/sdk/zomp.py check "out/$filename" --require-three-modes
           VERSION="$version" TAG="$tag" FILENAME="$filename" python3 - <<'PY'
-          import hashlib, json, os
+          import hashlib, json, os, sys
           from pathlib import Path
           package = Path('out') / os.environ['FILENAME']
           manifest = json.loads((Path('fortress-badlands') / os.environ['VERSION'] / 'zompa.json').read_text())
@@ -73,6 +77,9 @@ jobs:
               'sha256':hashlib.sha256(package.read_bytes()).hexdigest(),
               'size':package.stat().st_size,
           })
+          sys.path.insert(0, 'tools')
+          from catalog_art import add_catalog_art
+          add_catalog_art(Path.cwd(), entry)
           Path('out/catalog-v2.json').write_text(json.dumps({'schema':2,'games':[entry],'archive':[]}, indent=2)+'\n')
           PY
       - name: Store exact verified build for publication
