@@ -1,4 +1,4 @@
-name: Publish Fortress to Get Games
+name: Publish Fortress Siege to Get Games
 
 on:
   pull_request:
@@ -56,11 +56,12 @@ jobs:
              .minZompaBuild >= 56 and
              (.modes | sort == ["local","online","solo"])' "$source/zompa.json"
           cmp "$source/zompa.lua" sdk-host/sdk/zompa.lua
-          (cd "$source" && python3 tests/run_lua.py tests/smoke.lua tests/square_grid_smoke.lua tests/landing_smoke.lua tests/ui_smoke.lua tests/ux_smoke.lua tests/cpu_visual_smoke.lua tests/handoff_smoke.lua tests/hex_geometry_smoke.lua tests/autoplay.lua)
-          filename="Fortress-Badlands-v$version.zomp"
+          (cd "$source" && python3 tests/run_lua.py tests/*smoke.lua tests/autoplay.lua)
+          tag="fortress-siege-final-conquest-v$version"
+          filename="Fortress-Siege-Final-Conquest-v$version.zomp"
           python3 sdk-host/sdk/zomp.py build "$source" "out/$filename" --require-three-modes
           python3 sdk-host/sdk/zomp.py check "out/$filename" --require-three-modes
-          VERSION="$version" BUILD="$build" FILENAME="$filename" python3 - <<'PY'
+          VERSION="$version" TAG="$tag" FILENAME="$filename" python3 - <<'PY'
           import hashlib, json, os
           from pathlib import Path
           package = Path('out') / os.environ['FILENAME']
@@ -68,7 +69,7 @@ jobs:
           entry = {key:manifest[key] for key in ('id','title','version','build','modes','localSaves','minZompaBuild','onlineProtocol')}
           entry.update({
               'format':'zomp',
-              'url':f"https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-badlands-v{manifest['version']}/{package.name}",
+              'url':f"https://github.com/JustTrySomthing/zompa-games/releases/download/{os.environ['TAG']}/{package.name}",
               'sha256':hashlib.sha256(package.read_bytes()).hexdigest(),
               'size':package.stat().st_size,
           })
@@ -102,7 +103,8 @@ jobs:
           set -euo pipefail
           entry=out/catalog-v2.json
           version=$(jq -er '.games[0].version' "$entry")
-          tag="fortress-badlands-v$version"
+          title=$(jq -er '.games[0].title' "$entry")
+          tag="fortress-siege-final-conquest-v$version"
           filename=$(jq -er '.games[0].url | split("/") | last' "$entry")
           [[ "$filename" =~ ^[A-Za-z0-9._-]+\.zomp$ ]]
           file="out/$filename"
@@ -114,8 +116,8 @@ jobs:
 
           if ! gh release view "$tag" --json isDraft,targetCommitish >/dev/null 2>&1; then
             gh release create "$tag" --draft --target "$GITHUB_SHA" \
-              --title "Fortress: The Badlands $version (Prototype)" \
-              --notes "Early access game for Zompa Get Games. Includes single player, pass and play, and online turns. Art and Android playtesting are still in progress."
+              --title "$title $version" \
+              --notes "Portrait strategy game for Zompa Get Games. Includes single player, pass and play, and online turns."
           fi
           draft=$(gh release view "$tag" --json isDraft --jq '.isDraft')
           if [[ "$draft" == true ]]; then
@@ -148,8 +150,12 @@ jobs:
           existing['games']=[g for g in games if g['id'] != candidate['id']]+[candidate]
           Path('out/updated-catalog.json').write_text(json.dumps(existing,indent=2)+'\n')
           PY
+          if diff -q <(jq -S . out/existing-catalog.json) <(jq -S . out/updated-catalog.json); then
+            echo "$tag is already listed in Get Games"
+            exit 0
+          fi
           sha=$(jq -r '.sha' out/current.json)
           jq -n --arg sha "$sha" --rawfile data out/updated-catalog.json \
-            '{message:"Publish Fortress game to Get Games", branch:"main", sha:$sha, content:($data|@base64)}' \
+            '{message:"Publish Fortress Siege to Get Games", branch:"main", sha:$sha, content:($data|@base64)}' \
             | gh api --method PUT "$endpoint" --input - --jq .commit.sha
           echo "Published $tag to Get Games"
