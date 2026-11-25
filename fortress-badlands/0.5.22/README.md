@@ -6,7 +6,7 @@ Choose one move or attack per turn. Most attacks target a neighboring hex. Arche
 
 Press Roll to decide the first turn. In online matches, the inviter starts the roll. Local v0.5.18 matches keep their original opening order. Existing online matches keep their original build.
 
-## Earlier releases
+Battles show a Ready for Combat cue before the attack die rolls automatically. Bonus healing also rolls automatically.\n\n## Earlier releases
 
 ## Release v0.5.0 — approved 15-piece symmetrical redesign
 
