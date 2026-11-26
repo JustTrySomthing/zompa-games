@@ -1737,6 +1737,39 @@
           "label": "An Archer wins the practice battle and earns a Health reward"
         }
       ]
+    },
+    {
+      "id": "fortress-badlands",
+      "title": "Fortress Siege: Final Conquest",
+      "version": "0.5.49",
+      "build": 66,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "localSaves": true,
+      "minZompaBuild": 56,
+      "onlineProtocol": "turns-v1",
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v0.5.49/Fortress-Siege-Final-Conquest-v0.5.49.zomp",
+      "sha256": "7aba77bd45b80133f1d4e9d7e8365980875542dee30776b9f4898b3354485ff8",
+      "size": 4923856,
+      "cover": "cover.webp",
+      "screenshots": [
+        {
+          "file": "shot-1.webp",
+          "label": "The two armies on the opening battlefield"
+        },
+        {
+          "file": "shot-2.webp",
+          "label": "Inspect a Soldier to see its Health, Move, Power, Range, and Shield"
+        },
+        {
+          "file": "shot-3.webp",
+          "label": "An Archer wins the practice battle and earns a Health reward"
+        }
+      ]
     }
   ],
   "games": [
@@ -1776,8 +1809,8 @@
     {
       "id": "fortress-badlands",
       "title": "Fortress Siege: Final Conquest",
-      "version": "0.5.49",
-      "build": 66,
+      "version": "0.5.50",
+      "build": 67,
       "modes": [
         "solo",
         "local",
@@ -1787,9 +1820,9 @@
       "minZompaBuild": 56,
       "onlineProtocol": "turns-v1",
       "format": "zomp",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v0.5.49/Fortress-Siege-Final-Conquest-v0.5.49.zomp",
-      "sha256": "7aba77bd45b80133f1d4e9d7e8365980875542dee30776b9f4898b3354485ff8",
-      "size": 4923856,
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v0.5.50/Fortress-Siege-Final-Conquest-v0.5.50.zomp",
+      "sha256": "c96460d5ac9b91dae5b897a8d2cfaffdc483807d3c24f3d951fe81c136147534",
+      "size": 4924278,
       "cover": "cover.webp",
       "screenshots": [
         {
