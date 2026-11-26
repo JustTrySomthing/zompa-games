@@ -2547,7 +2547,8 @@ local function drawActionBar()
     elseif mode=='solo' and state.turn==2 then label='BLUE KINGDOM IS THINKING…'
     elseif selected then label='TAP A HIGHLIGHTED HEX'
     elseif saveVersionChanged and state.moves==0 then label='RULES UPDATED  •  START A NEW MATCH'
-    elseif state.moves==0 and mayAct() then label='TAP ONE OF YOUR UNITS'
+    elseif mayAct() and (state.moves==0 or notice=='Select a warrior first.') then
+      label='Select a warrior first.'
     else
       local nextSide=state.turn==1 and 'RED' or 'BLUE'
       local waiting=mode=='online' and state.turn~=onlineSide
@@ -2778,7 +2779,7 @@ local function onTap(x,y)
     notice='This hex is not reachable by the selected soldier.'
   else
     inspected=nil
-    notice='Select one of your soldiers first.'
+    notice='Select a warrior first.'
   end
 end
 local lastTapAt=-10

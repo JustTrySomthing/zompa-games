@@ -165,7 +165,13 @@ has(paint(),state.turn==1 and 'Your Turn' or "CPU's Turn")
 state.turn=1
 love.update(1.1)
 local idle=paint()
-has(idle,'TAP ONE OF YOUR UNITS')
+has(idle,'Select a warrior first.')
+-- Tapping an empty hex without a selection also shows the prompt later in a match.
+state.moves=1
+tapCell(5,3)
+has(paint(),'Select a warrior first.')
+assert(state.moves==1,'the prompt must not spend a turn')
+state.moves=0
 assert(draws>=30,'all 30 living piece sprites must render')
 assert(fortressSprites==2,'both fortress sprite assets must render on board')
 -- A Fortress can be inspected before choosing a troop.
