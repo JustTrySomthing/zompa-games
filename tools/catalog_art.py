@@ -13,13 +13,13 @@ def add_catalog_art(root, entry):
         shots = preview.get("screenshots", [])
         if cover is not None and cover != "cover.webp":
             raise ValueError("Cover must be cover.webp")
-        if not isinstance(shots, list) or len(shots) > 3:
-            raise ValueError("Use up to three screenshots")
+        if not isinstance(shots, list) or len(shots) > 8:
+            raise ValueError("Use up to eight screenshots")
         files = [cover] if cover else []
         for shot in shots:
             filename = shot["file"]
             label = shot["label"]
-            if (not re.fullmatch(r"shot-[1-3]\.webp", filename)
+            if (not re.fullmatch(r"shot-[1-8]\.webp", filename)
                     or filename in files
                     or not isinstance(label, str)
                     or not 1 <= len(label.strip()) <= 100):
@@ -36,5 +36,7 @@ def add_catalog_art(root, entry):
         if cover:
             entry["cover"] = cover
         if shots:
-            entry["screenshots"] = shots
+            entry["screenshots"] = [shot for shot in shots if shot["file"] in ("shot-1.webp", "shot-2.webp", "shot-3.webp")]
+            if len(shots) > 3:
+                entry["gallery"] = shots
 

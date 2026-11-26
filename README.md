@@ -4,7 +4,7 @@ Zompa installs official games as `.zomp` packages from **Games → Get Games**. 
 
 The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with exact file sizes and SHA-256 hashes. Each package is a ZIP archive with a root `zompa.json` manifest and game files. Cats vs Dogs includes solo, pass and play, and online matches. Solo and pass-and-play use a first-to-three series. Online games also use a first-to-three series when both players’ Zompa apps support it. The LÖVE player in Zompa runs the downloaded package. The catalog keeps previous package references for shared links and match history.
 
-[Fortress Siege: Final Conquest](fortress-badlands/0.5.68) is a portrait strategy game. Lead the Red or Blue army, use each unit’s movement and attack range, and destroy the enemy fortress. Play solo, pass and play, or online.
+[Fortress Siege: Final Conquest](fortress-badlands/0.5.69) is a portrait strategy game. Lead the Red or Blue army, use each unit’s movement and attack range, and destroy the enemy fortress. Play solo, pass and play, or online.
 
 [Fortress Siege v0.5.44 checkpoint](https://github.com/JustTrySomthing/zompa-games/releases/tag/fortress-siege-final-conquest-v0.5.44) preserves the playable package and source before the visual update. To restore this look through Get Games, package the checkpoint source with a new version and a higher build number.
 
@@ -21,7 +21,7 @@ Optional catalog artwork lives at `catalog-art/<game-id>/<version>/`. [Cats vs D
 | File | Requirements |
 | --- | --- |
 | `cover.webp` | One cover, ideally 16:9 and around 1280 × 720. Keep the main subject near the center so the cover works on narrow and wide cards. |
-| `shot-1.webp`, `shot-2.webp`, `shot-3.webp` | Up to three screenshots of the game at its natural aspect ratio. Use at least 480 px on the short side and at most 1600 px on the long side. |
+| `shot-1.webp` through `shot-8.webp` | Up to eight screenshots of the game at its natural aspect ratio. Use at least 480 px on the short side and at most 1600 px on the long side. |
 | `preview.json` | List the cover filename if included and the screenshots in display order. Give every screenshot a short description of what it shows, up to 100 characters. |
 
 Export still WebP images at **350 KiB or smaller per image**. Submit full game frames without phone status bars, moderator tools, or personal information. The cover appears on the Get Games card. Screenshots load when someone opens the gallery from the photo icon. Art lives outside the package so it does not increase the download or installation size.
