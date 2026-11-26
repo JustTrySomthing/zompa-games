@@ -129,7 +129,11 @@ jobs:
           draft=$(gh release view "$tag" --json isDraft --jq '.isDraft')
           if [[ "$draft" == true ]]; then
             gh release upload "$tag" "$file" --clobber
-            gh release edit "$tag" --draft=false --prerelease
+            if [[ "$version" == 0.* ]]; then
+              gh release edit "$tag" --draft=false --prerelease
+            else
+              gh release edit "$tag" --draft=false --prerelease=false
+            fi
           fi
           url=$(jq -er '.games[0].url' "$entry")
           curl -fsSL --retry 5 --retry-all-errors "$url" -o out/public.zomp
