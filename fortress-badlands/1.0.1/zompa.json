@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "id": "fortress-badlands",
+  "title": "Fortress Siege: Final Conquest",
+  "version": "1.0.1",
+  "build": 91,
+  "runtime": "love-11.5",
+  "entry": "main.lua",
+  "modes": [
+    "solo",
+    "local",
+    "online"
+  ],
+  "orientation": "portrait",
+  "localSaves": true,
+  "minZompaBuild": 56,
+  "onlineProtocol": "turns-v1"
+}
