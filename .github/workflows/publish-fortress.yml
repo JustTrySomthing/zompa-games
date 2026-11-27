@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: JustTrySomthing/zompa
-          ref: db16a1a98ba1f0e577fcc087b70fcccc62fefe12
+          ref: 4306e358cdc66e62cf4a288fbfaa427e9ad6e907
           path: sdk-host
           persist-credentials: false
       - name: Install Lua runtime for deterministic rules tests
