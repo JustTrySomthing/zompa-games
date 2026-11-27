@@ -107,13 +107,18 @@ function ui.wall(g,x,y,r,hp,maximum,alpha)
   g.setColor(.32,.29,.27,alpha)
   g.rectangle('fill',left,top,r*1.66,height,2,2)
   for row=0,2 do
-    for column=0,2 do
-      local w=r*.51
-      local bx=left+r*.04+column*r*.55
-      local by=top+row*height/3
-      local shade=.43+(row*7+column*3)%5*.027
-      g.setColor(shade,shade*.93,shade*.83,alpha)
-      g.rectangle('fill',bx,by+1,w,math.max(.5,height/3-1.5),1,1)
+    local by=top+row*height/3
+    for column=-1,2 do
+      local start=left+r*(.04+column*.55+(row%2)*.27)
+      local bx=math.max(left+r*.04,start)
+      local edge=math.min(left+r*1.62,start+r*.51)
+      if edge-bx>.5 then
+        local shade=.38+(row*7+column*3)%5*.031
+        g.setColor(shade,shade*.94,shade*.85,alpha)
+        g.rectangle('fill',bx,by+1,edge-bx,math.max(.5,height/3-1.5),1,1)
+        g.setColor(.74,.68,.55,.21*alpha)
+        g.line(bx+1,by+2,edge-1,by+2)
+      end
     end
   end
   g.setColor(.78,.64,.46,.90*alpha);g.setLineWidth(math.max(1,r*.042))

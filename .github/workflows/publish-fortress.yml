@@ -118,7 +118,7 @@ jobs:
           expected=$(jq -er '.games[0].sha256' "$entry")
           printf '%s  %s\n' "$expected" "$file" | sha256sum --check
           required=$(jq -er '.games[0].minZompaBuild' "$entry")
-          shipped=$(curl -fsSL --retry 4 'https://raw.githubusercontent.com/JustTrySomthing/zompa/main/update.json' | jq -er '.build')
+          shipped=$(gh api 'repos/JustTrySomthing/zompa/contents/update.json?ref=main' --jq .content | base64 --decode | jq -er '.build')
           [[ "$shipped" -ge "$required" ]] || { echo "Zompa Android build $required not released yet" >&2; exit 1; }
 
           if ! gh release view "$tag" --json isDraft,targetCommitish >/dev/null 2>&1; then

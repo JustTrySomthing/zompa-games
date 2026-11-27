@@ -2600,6 +2600,7 @@ local function drawActionBar()
     elseif turnSendFailed then label='COULD NOT SEND TURN'
     elseif overlay and overlay.type=='attackNotice' then
       label=overlay.event.actor==1 and 'RED ATTACKS' or 'BLUE ATTACKS'
+    elseif overlay and overlay.type=='trap' then label='RESOLVING BOOBY TRAP'
     elseif moving then label=moving.event.actor==2 and 'BLUE KINGDOM MOVES' or 'RED KINGDOM MOVES'
     elseif mode=='solo' and state.turn==2 then label='BLUE KINGDOM IS THINKING…'
     elseif selected and rules.piece(state,selected).class=='fortress' and not next(targets.attacks) then
