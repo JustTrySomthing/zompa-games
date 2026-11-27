@@ -23,8 +23,8 @@ def verify_candidate(path, repo, sdk):
     manifest = sdk.validate(path, require_three_modes=True)
     if manifest["id"] != path.parent.parent.name:
         raise ValueError(f"Game ID and directory do not match: {path}")
-    if manifest.get("onlineProtocol") != "turns-v1":
-        raise ValueError(f"Official games require the shared turns-v1 protocol: {path}")
+    if manifest.get("onlineProtocol") not in ("turns-v1", "turns-v2"):
+        raise ValueError(f"Official games require a shared online turn protocol: {path}")
     return sdk.catalog_entry(path, manifest, repo)
 
 

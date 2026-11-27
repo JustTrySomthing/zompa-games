@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: JustTrySomthing/zompa
-          ref: 4306e358cdc66e62cf4a288fbfaa427e9ad6e907
+          ref: 81ac52ad26b3f4a537daf81eb2795d9fdc8094c0
           path: sdk-host
           persist-credentials: false
       - name: Install Lua runtime for deterministic rules tests
@@ -56,8 +56,8 @@ jobs:
           test -f "$source/zompa.json"
           jq -e --arg version "$version" --argjson build "$build" \
             '.id == "fortress-badlands" and .version == $version and .build == $build and
-             .localSaves == true and .onlineProtocol == "turns-v1" and
-             .minZompaBuild >= 56 and
+             .localSaves == true and .onlineProtocol == "turns-v2" and
+             .minZompaBuild >= 62 and
              (.modes | sort == ["local","online","solo"])' "$source/zompa.json"
           cmp "$source/zompa.lua" sdk-host/sdk/zompa.lua
           (cd "$source" && python3 tests/run_lua.py tests/*smoke.lua tests/autoplay.lua)
