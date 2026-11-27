@@ -4,7 +4,7 @@ Zompa installs official games as `.zomp` packages from **Games → Get Games**. 
 
 The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with exact file sizes and SHA-256 hashes. Each package is a ZIP archive with a root `zompa.json` manifest and game files. Cats vs Dogs includes solo, pass and play, and online matches. Solo and pass-and-play use a first-to-three series. Online games also use a first-to-three series when both players’ Zompa apps support it. The LÖVE player in Zompa runs the downloaded package. The catalog keeps previous package references for shared links and match history.
 
-[Fortress Siege: Final Conquest](fortress-badlands/1.3.4) is a portrait strategy game. Lead the Red or Blue army, use each unit’s movement and attack range, and destroy the enemy fortress. Play solo, pass and play, or online.
+[Fortress Siege: Final Conquest](fortress-badlands/1.3.5) is a portrait strategy game. Lead the Red or Blue army, use each unit’s movement and attack range, and destroy the enemy fortress. Play solo, pass and play, or online.
 
 [Fortress Siege v0.5.72 checkpoint](https://github.com/JustTrySomthing/zompa-games/tree/checkpoint/fortress-siege-pre-1.0.0) preserves the source, gallery, and catalog before 1.0.0. The [playable v0.5.72 package](https://github.com/JustTrySomthing/zompa-games/releases/tag/fortress-siege-final-conquest-v0.5.72) is available on GitHub Releases.
 
@@ -12,13 +12,13 @@ The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with 
 
 The old [catalog.json](catalog.json) and its Drop Four 1.0.0 `.love` release serve older Zompa installs. Plain `.love` files are intended for manual imports in Zompa.
 
-Cats vs Dogs is the [three-mode SDK reference](drop-four/1.3.46). To publish a new build, update the version and build in [the release request](.github/release-request.json). [The publishing workflow](.github/workflows/publish-game.yml) builds one package, checks it in the Android player in all three modes, publishes the tested bytes, and lists the game after verifying the public download. Keep old tags available.
+Cats vs Dogs is the [three-mode SDK reference](drop-four/1.3.56). To publish a new build, update the version and build in [the release request](.github/release-request.json). [The publishing workflow](.github/workflows/publish-game.yml) builds one package, checks it in the Android player in all three modes, publishes the tested bytes, and lists the game after verifying the public download. Keep old tags available.
 
 ## Submit a game
 
 [Open a game submission](https://github.com/JustTrySomthing/zompa-games/issues/new?template=game-submission.yml) with the title, version, play modes, a link to the source and the `.zomp` build, and any artwork you want shown in **Get Games**. For a game that is already listed, use the same game ID and include the release notes for the new version.
 
-Optional catalog artwork lives at `catalog-art/<game-id>/<version>/`. [Cats vs Dogs 1.3.4](catalog-art/drop-four/1.3.4) shows how the files fit together.
+Optional catalog artwork lives at `catalog-art/<game-id>/<version>/`. [Cats vs Dogs 1.3.5](catalog-art/drop-four/1.3.5) shows how the files fit together.
 
 | File | Requirements |
 | --- | --- |
