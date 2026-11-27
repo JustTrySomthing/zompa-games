@@ -3598,6 +3598,69 @@
           "label": "The two Fortresses exchange boulders in Final Siege"
         }
       ]
+    },
+    {
+      "id": "fortress-badlands",
+      "title": "Fortress Siege: Final Conquest",
+      "version": "1.3.7",
+      "build": 105,
+      "modes": [
+        "solo",
+        "local",
+        "online"
+      ],
+      "localSaves": true,
+      "minZompaBuild": 61,
+      "onlineProtocol": "turns-v1",
+      "format": "zomp",
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v1.3.7/Fortress-Siege-Final-Conquest-v1.3.7.zomp",
+      "sha256": "8ed15c824e5798be63c0b767f11aeaac05466f61655d5b0a5676d442c39d39ff",
+      "size": 7709928,
+      "cover": "cover.webp",
+      "screenshots": [
+        {
+          "file": "shot-1.webp",
+          "label": "Opening cinematic with both kingdoms facing the Fortress"
+        },
+        {
+          "file": "shot-2.webp",
+          "label": "The battlefield and a Red Soldier\u2019s available moves"
+        },
+        {
+          "file": "shot-3.webp",
+          "label": "Red Wizard faces Blue Ogre in an attack roll"
+        }
+      ],
+      "gallery": [
+        {
+          "file": "shot-1.webp",
+          "label": "Opening cinematic with both kingdoms facing the Fortress"
+        },
+        {
+          "file": "shot-2.webp",
+          "label": "The battlefield and a Red Soldier\u2019s available moves"
+        },
+        {
+          "file": "shot-3.webp",
+          "label": "Red Wizard faces Blue Ogre in an attack roll"
+        },
+        {
+          "file": "shot-4.webp",
+          "label": "Red Archer\u2019s expanded character card and abilities"
+        },
+        {
+          "file": "shot-5.webp",
+          "label": "Death Match between a Red Assassin and a Blue Barbarian"
+        },
+        {
+          "file": "shot-6.webp",
+          "label": "A victorious Ogre can roll for a Health reward"
+        },
+        {
+          "file": "shot-7.webp",
+          "label": "The two Fortresses exchange boulders in Final Siege"
+        }
+      ]
     }
   ],
   "games": [
@@ -3637,20 +3700,20 @@
     {
       "id": "fortress-badlands",
       "title": "Fortress Siege: Final Conquest",
-      "version": "1.3.7",
-      "build": 105,
+      "version": "1.4.0",
+      "build": 106,
       "modes": [
         "solo",
         "local",
         "online"
       ],
       "localSaves": true,
-      "minZompaBuild": 61,
-      "onlineProtocol": "turns-v1",
+      "minZompaBuild": 62,
+      "onlineProtocol": "turns-v2",
       "format": "zomp",
-      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v1.3.7/Fortress-Siege-Final-Conquest-v1.3.7.zomp",
-      "sha256": "8ed15c824e5798be63c0b767f11aeaac05466f61655d5b0a5676d442c39d39ff",
-      "size": 7709928,
+      "url": "https://github.com/JustTrySomthing/zompa-games/releases/download/fortress-siege-final-conquest-v1.4.0/Fortress-Siege-Final-Conquest-v1.4.0.zomp",
+      "sha256": "7ce6a004a9aa2c64450af93e8325c06387fd1b508e95504d9b71cf42e0fb8e4b",
+      "size": 7710375,
       "cover": "cover.webp",
       "screenshots": [
         {
