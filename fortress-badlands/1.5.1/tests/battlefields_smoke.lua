@@ -1,0 +1,122 @@
+local rules=require('rules')
+local boards=require('boards')
+local variants=require('variants')
+local cpu=require('cpu')
+local function count(t)
+  local n=0
+  for _ in pairs(t) do n=n+1 end
+  return n
+end
+
+local expected={classic={56,15,3,6},skirmish={37,6,2,3},narrows={60,9,3,2},bridges={56,9,4,2},wide={78,15,5,6}}
+for _,def in ipairs(boards) do
+  local engine=rules.forBoard(def.id)
+  local countExpected,troops,default,segments=table.unpack(expected[def.id])
+  local hexes=0
+  for r=0,engine.ROWS-1 do
+    for c=0,engine.COLS-1 do if engine.playable(r,c) then hexes=hexes+1 end end
+  end
+  assert(hexes==countExpected and variants.defaults(def.id).crateCount==default)
+  local opening=rules.new(51,1,{board=def.id})
+  assert(#opening.units==2*troops and opening.boardId==def.id)
+  for side=1,2 do
+    opening.turn=side
+    local actions=engine.actions(opening)
+    assert(#actions>0)
+    for _,act in ipairs(actions) do assert(act.type=='move','No opening-position attack on '..def.id) end
+  end
+  if def.id=='skirmish' then
+    for _,u in ipairs(opening.units) do
+      if u.class=='soldier' then assert(u.r==(u.owner==1 and 5 or 1) and u.c==2) end
+    end
+  elseif def.id=='bridges' then
+    for side=1,2 do
+      local ogres=0
+      for _,u in ipairs(opening.units) do if u.owner==side and u.class=='ogre' then ogres=ogres+1 end end
+      assert(ogres==2)
+    end
+    assert(not engine.playable(4,4))
+    local wizard
+    for _,u in ipairs(opening.units) do if u.class=='wizard' and u.owner==1 then wizard=u end end
+    opening.turn=1
+    wizard.r,wizard.c=5,3
+    assert(not engine.moves(opening,wizard.id)[engine.key(3,3)],'a wizard cannot bypass the bridges')
+    assert(not engine.moves(opening,wizard.id)[engine.key(4,4)],'a wizard cannot land in the gap')
+    assert(engine.moves(opening,wizard.id)[engine.key(4,2)],'a wizard can land on the bridge')
+    assert(not engine.decode('M'..wizard.id..'_4_4'))
+  end
+  for seed=1,30 do
+    for _,wall in ipairs({false,true}) do
+      for amount=1,6 do
+        local board=rules.new(seed,1,{board=def.id,wall=wall,crates=true,crateCount=amount})
+        assert(count(board.crates)==amount and count(board.walls)==(wall and segments or 0))
+        for _,section in pairs(board.walls) do assert(engine.playable(section.r,section.c)) end
+        for key,crate in pairs(board.crates) do
+          assert(engine.playable(crate.r,crate.c) and not engine.occupied(board,crate.r,crate.c))
+          assert(not board.walls[key] and math.abs(crate.r-def.middle)<=2)
+          for k,other in pairs(board.crates) do assert(key==k or engine.distance(crate,other)>1) end
+        end
+        local restored=assert(rules.restore(engine.serialize(board)))
+        assert(restored.boardId==def.id and restored.options.crateCount==amount)
+        for key,contents in pairs(restored.crateContents) do assert(board.crateContents[key]==contents) end
+      end
+    end
+  end
+  local completed=0
+  for match=1,6 do
+    math.randomseed(match*3257)
+    local seed=match*991
+    local board=rules.new(seed,1+match%2,{board=def.id,wall=match%3==1,crates=match%3~=0})
+    for turn=1,360 do
+      if board.winner~=nil then break end
+      local action=assert(cpu(board,math.random))
+      local ok,event=engine.apply(board,action)
+      assert(ok,event)
+    end
+    if board.winner~=nil then completed=completed+1 end
+    local restored=assert(rules.restore(engine.serialize(board)))
+    assert(restored.rng==board.rng and restored.winner==board.winner and restored.moves==board.moves)
+  end
+  print(('PASS: %s, 360 crate placements and %d/6 CPU matches completed before the test cutoff'):format(def.name,completed))
+end
+
+
+local narrows=rules.forBoard('narrows')
+local crossed=narrows.new(76,1,{wall=true})
+local wizard={r=6,c=0,class='wizard',owner=1}
+local target={r=4,c=0,class='wizard',owner=2}
+assert(narrows.canAttack(crossed,wizard,target),'a ray outside the wall edge must remain open')
+wizard.c,target.c=2,2
+assert(not narrows.canAttack(crossed,wizard,target),'a ray across the actual pass must still hit the wall')
+crossed.options.overWall=true
+assert(narrows.canAttack(crossed,wizard,target))
+crossed.options.overWall=false
+wizard.c,target.c=1,1
+assert(not narrows.canAttack(crossed,wizard,target),'a ray along the outer edge still touches the wall')
+wizard.c,target.c=0,0
+crossed.replayingNarrows150=true
+assert(not narrows.canAttack(crossed,wizard,target),'legacy saves can validate old forced passes')
+print('PASS: Narrows walls block rays that intersect a real section, with legacy replay support')
+
+
+local pass=narrows.new(76,1)
+local caster,assassin
+for _,u in ipairs(pass.units) do
+  if u.owner==1 and u.class=='wizard' then caster=u end
+  if u.owner==1 and u.class=='assassin' then assassin=u end
+end
+caster.r,caster.c=6,0
+assert(not narrows.moves(pass,caster.id)[narrows.key(4,0)],'teleport cannot bypass the pass')
+caster.c=1
+assert(narrows.moves(pass,caster.id)[narrows.key(4,2)],'teleport can cross via a playable middle hex')
+caster.c=0
+assassin.r,assassin.c=6,1
+assert(not narrows.canAttack(pass,assassin,{r=4,c=0,owner=2}),'melee cannot cross the gap')
+pass.replayingNarrows150=true
+assert(narrows.moves(pass,caster.id)[narrows.key(4,0)],'past local moves can replay using the older rule')
+-- Actual 1.5.0 save, including a teleport that is now disallowed during live play.
+local old='OPTIONS:B3_0_3_0_16_3_0|v22|76|1|0|0|0|0|M4_7_0,M10_0_0,M4_6_0,M10_0_1,M4_4_0'
+local restored=assert(rules.restore(old))
+assert(restored.moves==5 and restored.units[4].r==4 and restored.units[4].c==0)
+assert(narrows.serialize(restored)==old and restored.replayingNarrows150==nil)
+print('PASS: the Narrows requires a playable path for teleport and melee, and restores actual 1.5.0 history')
