@@ -4,7 +4,7 @@ Zompa installs official games as `.zomp` packages from **Games → Get Games**. 
 
 The [current catalog](catalog-v2.json) lists downloadable `.zomp` packages with exact file sizes and SHA-256 hashes. Each package is a ZIP archive with a root `zompa.json` manifest and game files. Cats vs Dogs includes solo, pass and play, and online matches. Solo and pass-and-play use a first-to-three series. Online games also use a first-to-three series when both players’ Zompa apps support it. The LÖVE player in Zompa runs the downloaded package. The catalog keeps previous package references for shared links and match history.
 
-[Fortress Siege: Final Conquest](fortress-badlands/1.4.5) is a portrait strategy game. Lead the Red or Blue army, use each unit’s movement and attack range, and destroy the enemy fortress. Play solo, pass and play, or online.
+[Fortress Siege: Final Conquest](fortress-badlands/1.4.6) is a portrait strategy game. Lead the Red or Blue army, use each unit’s movement and attack range, and destroy the enemy fortress. Play solo, pass and play, or online.
 
 [Fortress Siege v0.5.72 checkpoint](https://github.com/JustTrySomthing/zompa-games/tree/checkpoint/fortress-siege-pre-1.0.0) preserves the source, gallery, and catalog before 1.0.0. The [playable v0.5.72 package](https://github.com/JustTrySomthing/zompa-games/releases/tag/fortress-siege-final-conquest-v0.5.72) is available on GitHub Releases.
 
