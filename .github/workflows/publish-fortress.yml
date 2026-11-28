@@ -159,7 +159,10 @@ jobs:
               if not any(g['id']==old['id'] and g['build']==old['build'] for g in archive):
                   archive.append(old)
           existing['games']=[g for g in games if g['id'] != candidate['id']]+[candidate]
-          Path('out/updated-catalog.json').write_text(json.dumps(existing,indent=2)+'\n')
+          Path('out/updated-catalog.json').write_text(
+              json.dumps(existing, ensure_ascii=False, separators=(',', ':'))+'\n',
+              encoding='utf-8',
+          )
           PY
           if diff -q <(jq -S . out/existing-catalog.json) <(jq -S . out/updated-catalog.json); then
             echo "$tag is already listed in Get Games"

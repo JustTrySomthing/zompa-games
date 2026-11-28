@@ -125,15 +125,16 @@ jobs:
             [[ "$build" -gt "$old" ]]
             sha=$(jq -r .sha out/previous.json)
             jq -r .content out/previous.json | base64 --decode > out/old-catalog.json
-            jq --slurpfile old out/old-catalog.json \
+            jq -c --slurpfile old out/old-catalog.json \
               '.archive = ((($old[0].archive // []) + [$old[0].games[] | select(.id=="drop-four")]) | unique_by([.id, .build])) | .games += [$old[0].games[] | select(.id!="drop-four")]' \
               out/catalog-v2.json > out/next-catalog.json
             mv out/next-catalog.json out/catalog-v2.json
           else
             grep -q 'HTTP 404' out/feed-error || { cat out/feed-error >&2; exit 1; }
             sha=''
+            jq -c . out/catalog-v2.json > out/next-catalog.json
+            mv out/next-catalog.json out/catalog-v2.json
           fi
-
           if ! gh release view "$tag" -R "$GITHUB_REPOSITORY" --json isDraft,targetCommitish,assets > out/release.json; then
             gh release create "$tag" -R "$GITHUB_REPOSITORY" --draft --target "$GITHUB_SHA" \
               --title "$title $version for Zompa" \

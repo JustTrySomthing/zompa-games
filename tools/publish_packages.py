@@ -124,7 +124,7 @@ def publish(verified, sdk):
             changed = True
         if not changed:
             return
-        data = (json.dumps(feed, indent=2, ensure_ascii=False)+"\n").encode()
+        data = (json.dumps(feed, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
         payload = dict(message="Update games available in Get Games", branch="main",
                        sha=record["sha"], content=base64.b64encode(data).decode())
         try:
